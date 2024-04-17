@@ -19,7 +19,7 @@ function InputForm() {
                 <Input type="text" placeholder="target page" name="target-page"></Input>
             </div>
             <button type="submit" className="h-12 px-8 font-semibold rounded bg-[#31363F] text-gray-500">
-                Submit
+                Search!
             </button>
         </form>
     );
