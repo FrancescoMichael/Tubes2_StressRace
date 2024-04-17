@@ -14,3 +14,7 @@ body{
 .main-title{
 
 }
+
+#form {
+    width: min(70vw, 400px);
+}
