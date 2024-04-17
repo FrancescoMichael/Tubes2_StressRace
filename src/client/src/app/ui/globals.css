@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    background-color: #222831;
+}
+
+.mag {
+    /* flip vertically */
+    transform: rotateY(180deg);
+}
+
+.main-title{
+
+}
