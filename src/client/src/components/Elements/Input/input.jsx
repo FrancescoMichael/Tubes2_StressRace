@@ -8,16 +8,12 @@ function Input(props){
     const [search, setSearch] = useState("");
     const [searchData, setSearchData] = useState([])
     const [selectedItem, setSelectedItem] = useState(-1)
+    const [isVisible, setIsVisible] = useState(true);
 
     const handleChange = e => {
         setSearch(e.target.value)
     }
 
-    const handleClose = () => {
-        setSearch("")
-        setSearchData([])
-        setSelectedItem(-1)
-    }
 
     const handleKeyDown = e => {
         if(selectedItem < searchData.length) {
@@ -30,11 +26,11 @@ function Input(props){
                 setSearch(options[selectedItem].label);
                 setSearchData([])
                 setSelectedItem(-1)
+                setIsVisible(!isVisible);
             }
         } else {
             setSelectedItem(-1)
-        }
-        
+        }        
     }
 
     useEffect(() => {
@@ -43,6 +39,7 @@ function Input(props){
                 .then(res => res.json())
                 .then(data => setSearchData(data));
         }
+
    }, [search]); 
 
     const [searchTerm, titles, emptyArray, urls] = searchData;
@@ -54,6 +51,7 @@ function Input(props){
 
     const handleOptionClick = (value) => {
         setSearch(value);
+        setIsVisible(!isVisible);
     }
 
     return (
@@ -68,19 +66,12 @@ function Input(props){
                 value={search}
                 onKeyDown={handleKeyDown}
             />
-            <div className = "bg-gray-300 px-4 h-full flex items-center cursor-pointer">
-                {
-                    search === "" ? (
-                        <SearchIcon />
-                    ) : (
-                        <CloseIcon onClick = {handleClose}/>
-                    )
-                }
+            <div>
+
             </div>
-            
-            <div className="search_result bg-white absolute top-full mt-5 w-full z-10">
+            <div className="search_result mt-100 bg-white absolute top-full" style={{width: '90%'}}>
                 {
-                search !== "" &&(options.map((data, index) => {
+                isVisible && search !== "" &&(options.map((data, index) => {
                     return (
                     <div
                         key={index}
@@ -97,6 +88,7 @@ function Input(props){
                 }))
                 }
             </div>
+
         </div>
 
     );

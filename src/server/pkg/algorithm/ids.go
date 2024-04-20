@@ -19,7 +19,7 @@ func Ids(startPage string, endPage string, maxDepth int) ([][]string, int) {
 		var currPathsDepth [][]string                       // store possible paths temporary
 		var visited map[string]bool = make(map[string]bool) // store nodes/links that has been visited to avoid cycles
 		dfs(startPage, endPage, depth, visited, nil, &currPathsDepth)
-		// if possible path has been found
+		// if possible path has bee n found
 		if len(currPathsDepth) > 0 {
 			shortestDepth = depth
 			paths = append(paths, currPathsDepth...)

@@ -55,7 +55,7 @@ func WebScraping(url string, resultData *[]string) error {
 }
 
 func WriteCsv(filename string) error {
-	file, err := os.Create("data.csv")
+	file, err := os.Create(filename)
 	if err != nil {
 		return nil
 	}
@@ -134,9 +134,9 @@ func ReadJSON(filename string) error {
 }
 
 func LoadCache() {
-	err := ReadJSON("data.json")
+	err := ReadJSON("links.json")
 	if err != nil {
-		err2 := WriteJSON("data.json")
+		err2 := WriteJSON("links.json")
 		if err2 != nil {
 			log.Fatal(err2)
 		}

@@ -12,7 +12,7 @@ import (
 func main() {
 	scraper.LoadCache()
 	// defer scraper.WriteCsv("data.txt")
-	defer scraper.WriteJSON("data.json")
+	defer scraper.WriteJSON("links.json")
 	var reader = bufio.NewReader(os.Stdin)
 	fmt.Print("Url start page : ")
 	urlStart, err := reader.ReadString('\n')
@@ -24,12 +24,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Something went wrong")
 	}
-	// hasil, depth := algorithm.Ids(urlStart, urlEnd, 100)
 
-	// fmt.Print("Depth : ", depth, "\n")
-	// for _, var2 := range hasil {
-	// 	fmt.Println(var2)
-	// }
 	start := time.Now()
 
 	hasil := algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 5)
@@ -40,12 +35,11 @@ func main() {
 	fmt.Println("time : ", totalTime)
 
 	if hasil != nil {
-		fmt.Printf("Depth : %d \n", len(hasil)-1)
-
+		fmt.Printf("Depth : %d\n", len(hasil)-1)
 		fmt.Println(hasil)
 
 	} else {
-		fmt.Println("No possible solution")
+		fmt.Println("Something went wrong")
 	}
 
 }
