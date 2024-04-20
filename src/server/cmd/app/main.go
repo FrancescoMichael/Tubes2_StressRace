@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
 	algorithm "server/pkg/algorithm"
 	"server/pkg/scraper"
 )
@@ -22,20 +23,33 @@ func main() {
 	if err != nil {
 		fmt.Println("Something went wrong")
 	}
-	// hasil, depth := algorithm.Ids(urlStart, urlEnd, 100)
 
-	// fmt.Print("Depth : ", depth, "\n")
-	// for _, var2 := range hasil {
-	// 	fmt.Println(var2)
-	// }
+	var choice string
+	fmt.Print("IDS/BFS(1/2) : ")
+	fmt.Scanln(&choice)
 
-	hasil := algorithm.IdsFirst(urlStart, urlEnd, 5)
+	currentTime := time.Now()
 
-	if hasil != nil {
-		fmt.Printf("Depth : %d \n", len(hasil)-1)
-		fmt.Println(hasil)
+	if choice == "1" {
+		hasil, depth := algorithm.Ids(urlStart, urlEnd, 100)
+
+		fmt.Print("Depth : ", depth, "\n")
+		for _, var2 := range hasil {
+			fmt.Println(var2)
+		}
 	} else {
-		fmt.Println("No possible solution")
+		hasil := algorithm.bfs(urlStart, urlEnd)
+		fmt.Println("BFS")
+		for _, var2 := range hasil { 
+			fmt.Println(var2)
+		}
 	}
+
+	endTime := time.Now()
+	diff := endTime.Sub(currentTime)
+	fmt.Println("Duration : ", diff)
+
+
+	
 
 }
