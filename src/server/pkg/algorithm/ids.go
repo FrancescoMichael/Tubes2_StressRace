@@ -38,7 +38,8 @@ func dfs(currUrl string, endPage string, currDepth int, visited map[string]bool,
 	}
 	var allUrl []string
 	err := scraper.WebScraping(currUrl, &allUrl)
-	if err != nil {
+	
+	if err != nil { 
 		return
 	}
 	visited[currUrl] = true
