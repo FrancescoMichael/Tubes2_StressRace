@@ -1,8 +1,11 @@
 package scraper
 
 import (
+	"encoding/csv"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -47,6 +50,65 @@ func WebScraping(url string, resultData *[]string) error {
 	})
 
 	return nil
+}
+
+func WriteCsv(filename string) error {
+	file, err := os.Create("data.csv")
+	if err != nil {
+		return nil
+	}
+	defer file.Close()
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	for key, links := range linkCache {
+		row := append([]string{key}, links...)
+		if err := writer.Write(row); err != nil {
+			return err
+		}
+
+	}
+	return nil
+
+}
+
+func ReadCsv(filename string) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+
+	// Assuming there is no header row
+	for {
+		row, err := reader.Read()
+		if err != nil {
+			if err == csv.ErrFieldCount || strings.Contains(err.Error(), "EOF") {
+				break // End of file or a line with wrong field count
+			}
+			return err
+		}
+		if len(row) > 1 {
+			key := row[0]
+			links := row[1:]
+			linkCache[key] = links
+		}
+	}
+
+	return nil
+}
+
+func LoadCache() {
+	err := ReadCsv("data.csv")
+	if err != nil {
+		err2 := WriteCsv("data.csv")
+		if err2 != nil {
+			log.Fatal(err2)
+		}
+
+	}
 }
 
 func GetScrapeLinks(link string) []string {

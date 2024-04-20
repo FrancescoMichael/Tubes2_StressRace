@@ -1,4 +1,4 @@
-import { Inter, Lusitana, Roboto, Josefin_Sans } from 'next/font/google';
+import { Inter, Lusitana, Roboto, Josefin_Sans, Fira_Sans} from 'next/font/google';
  
 export const inter = Inter({ subsets: ['latin'] });
 export const lusitana = Lusitana({
@@ -16,6 +16,13 @@ export const roboto = Roboto({
 })
 
 export const josefin = Josefin_Sans({
+    weight: ['400', '700'],
+    style: ['normal'],
+    subsets: ['latin'],
+    display: 'swap',
+})
+
+export const fira = Fira_Sans({
     weight: ['400', '700'],
     style: ['normal'],
     subsets: ['latin'],

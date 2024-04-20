@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import {josefin} from "@/app/ui/font"
+import {roboto} from "@/app/ui/font"
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
@@ -15,7 +15,8 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={ `${josefin.className} flex flex-wrap items-center justify-between bg-[#31363F] md:p-0` }  >
+    <div className="sticky top-0">
+      <nav className={ `${roboto.className} flex flex-wrap w-[100%] items-center justify-between bg-[transparent] md:p-0` }  >
       <h1 className="p-3 px-4 text-2xl text-white">
         <Link href="/" className="link-underline link-underline-black">
           StressRace
@@ -51,6 +52,8 @@ const Navbar = () => {
         </ul>
       )}
     </nav>
+    </div>
+    
   );
 };
 

@@ -6,9 +6,12 @@ import (
 	"os"
 	"time"
 	algorithm "server/pkg/algorithm"
+	"server/pkg/scraper"
 )
 
 func main() {
+	scraper.LoadCache()
+	defer scraper.WriteCsv("data.txt")
 	var reader = bufio.NewReader(os.Stdin)
 	fmt.Print("Url start page : ")
 	urlStart, err := reader.ReadString('\n')
@@ -48,14 +51,5 @@ func main() {
 
 
 	
-
-	// router := gin.Default()
-
-	// router.Use(cors.Default())
-
-	// router.GET("/albums", routers.GetAlbums)
-	// router.POST("/albums", routers.PostAlbums)
-
-	// router.Run("localhost:8080")
 
 }
