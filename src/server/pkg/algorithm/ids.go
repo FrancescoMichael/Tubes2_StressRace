@@ -1,7 +1,7 @@
 package algorithm
 
 import (
-	scraper "server/scraper"
+	scraper "server/pkg/scraper"
 	"strings"
 )
 
