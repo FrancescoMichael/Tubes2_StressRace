@@ -4,14 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"time"
 	algorithm "server/pkg/algorithm"
 	"server/pkg/scraper"
+	"time"
 )
 
 func main() {
 	scraper.LoadCache()
-	defer scraper.WriteCsv("data.txt")
+	// defer scraper.WriteCsv("data.txt")
+	defer scraper.WriteJSON("links.json")
 	var reader = bufio.NewReader(os.Stdin)
 	fmt.Print("Url start page : ")
 	urlStart, err := reader.ReadString('\n')
@@ -24,32 +25,21 @@ func main() {
 		fmt.Println("Something went wrong")
 	}
 
-	var choice string
-	fmt.Print("IDS/BFS(1/2) : ")
-	fmt.Scanln(&choice)
+	start := time.Now()
 
-	currentTime := time.Now()
+	hasil := algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 5)
 
-	if choice == "1" {
-		hasil, depth := algorithm.Ids(urlStart, urlEnd, 100)
+	end := time.Now()
 
-		fmt.Print("Depth : ", depth, "\n")
-		for _, var2 := range hasil {
-			fmt.Println(var2)
-		}
+	totalTime := end.Sub(start)
+	fmt.Println("time : ", totalTime)
+
+	if hasil != nil {
+		fmt.Printf("Depth : %d\n", len(hasil)-1)
+		fmt.Println(hasil)
+
 	} else {
-		hasil := algorithm.bfs(urlStart, urlEnd)
-		fmt.Println("BFS")
-		for _, var2 := range hasil { 
-			fmt.Println(var2)
-		}
+		fmt.Println("Something went wrong")
 	}
-
-	endTime := time.Now()
-	diff := endTime.Sub(currentTime)
-	fmt.Println("Duration : ", diff)
-
-
-	
 
 }

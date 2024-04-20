@@ -1,0 +1,5 @@
+# Ignore all CSV files
+*links.csv
+
+# Ignore all JSON files
+links.json
