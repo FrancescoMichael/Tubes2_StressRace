@@ -4,6 +4,7 @@ import InputForm from "@/components/Elements/Input/form"
 import Algo from "@/components/Elements/Input/algo"
 import MyComponent from "@/components/Elements/Input/lee"
 import SearchIcon from '@mui/icons-material/Search';
+import Result from "@/components/Elements/Result/Result";
 
 
 export default function Home() {
@@ -28,6 +29,7 @@ export default function Home() {
       
       <InputForm>
       </InputForm>
+      <Result />
 
     </main>
   );
