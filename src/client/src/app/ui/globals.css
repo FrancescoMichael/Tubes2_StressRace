@@ -70,6 +70,18 @@ select{
     color: white;
 }
 
+.container-result{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-flow: wrap;
+}
+
+.box-result{
+    width: 30%;
+    box-sizing: border-box;
+}
+
 
 
 @media screen and (max-width:1200px){

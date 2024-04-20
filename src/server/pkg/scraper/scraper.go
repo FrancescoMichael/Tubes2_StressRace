@@ -2,6 +2,7 @@ package scraper
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gocolly/colly/v2"
 )
 
 var linkCache = make(map[string][]string)
@@ -53,7 +55,7 @@ func WebScraping(url string, resultData *[]string) error {
 }
 
 func WriteCsv(filename string) error {
-	file, err := os.Create("data.csv")
+	file, err := os.Create(filename)
 	if err != nil {
 		return nil
 	}
@@ -70,6 +72,21 @@ func WriteCsv(filename string) error {
 	}
 	return nil
 
+}
+func WriteJSON(filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(linkCache)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func ReadCsv(filename string) error {
@@ -100,10 +117,26 @@ func ReadCsv(filename string) error {
 	return nil
 }
 
-func LoadCache() {
-	err := ReadCsv("data.csv")
+func ReadJSON(filename string) error {
+	file, err := os.Open(filename)
 	if err != nil {
-		err2 := WriteCsv("data.csv")
+		return err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&linkCache)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func LoadCache() {
+	err := ReadJSON("links.json")
+	if err != nil {
+		err2 := WriteJSON("links.json")
 		if err2 != nil {
 			log.Fatal(err2)
 		}
@@ -111,10 +144,53 @@ func LoadCache() {
 	}
 }
 
+func WebScrapingColly(url string, resultData *[]string) error {
+	if !strings.Contains(url, "wikipedia.org") {
+		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
+	}
+
+	c := colly.NewCollector(
+		colly.AllowedDomains("wikipedia.org", "en.wikipedia.org"),
+	)
+
+	c.OnError(func(r *colly.Response, err error) {
+		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	})
+
+	c.OnHTML("#bodyContent a[href]", func(e *colly.HTMLElement) {
+		href := e.Attr("href")
+		// Check if the link is internal to Wikipedia
+		if strings.HasPrefix(href, "/wiki/") {
+			completeLink := "https://en.wikipedia.org" + href
+			*resultData = append(*resultData, completeLink)
+		}
+	})
+	// Start scraping
+	err := c.Visit(url)
+	if err != nil {
+		return err
+	}
+	c.Wait()
+	return nil
+}
+
 func GetScrapeLinks(link string) []string {
 	links, exist := linkCache[link]
 	if !exist {
 		err := WebScraping(link, &links)
+		if err != nil {
+			return nil
+		}
+		linkCache[link] = links
+		return links
+	}
+	return links
+}
+
+func GetScrapeLinksColly(link string) []string {
+	links, exist := linkCache[link]
+	if !exist {
+		err := WebScrapingColly(link, &links)
 		if err != nil {
 			return nil
 		}
