@@ -19,11 +19,20 @@ func main() {
 	if err != nil {
 		fmt.Println("Something went wrong")
 	}
-	hasil, depth := algorithm.Ids(urlStart, urlEnd, 100)
+	// hasil, depth := algorithm.Ids(urlStart, urlEnd, 100)
 
-	fmt.Print("Depth : ", depth, "\n")
-	for _, var2 := range hasil {
-		fmt.Println(var2)
+	// fmt.Print("Depth : ", depth, "\n")
+	// for _, var2 := range hasil {
+	// 	fmt.Println(var2)
+	// }
+
+	hasil := algorithm.IdsFirst(urlStart, urlEnd, 5)
+
+	if hasil != nil {
+		fmt.Printf("Depth : %d \n", len(hasil)-1)
+		fmt.Println(hasil)
+	} else {
+		fmt.Println("No possible solution")
 	}
 
 	// router := gin.Default()
