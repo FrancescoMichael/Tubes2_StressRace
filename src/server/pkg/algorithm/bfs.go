@@ -1,8 +1,8 @@
 package algorithm
 
 import (
-	scraper "server/pkg/scraper"
 	"fmt"
+	scraper "server/pkg/scraper"
 )
 
 type Graph map[string][]string
@@ -16,7 +16,7 @@ func (g *Graph) AddEdge(from, to string) {
 	// (*g)[to] = append((*g)[to], from)
 }
 
-// func bfs(startPage string, endPage string) ([][]string) { 
+// func bfs(startPage string, endPage string) ([][]string) {
 // 	graph := make(Graph)
 
 // 	shortestPath := BFSShortestPaths(graph, startPage, endPage)
@@ -35,58 +35,58 @@ func (g *Graph) AddEdge(from, to string) {
 // }
 
 // func BFSShortestPaths(graph Graph, start, end string) [][]string {
-	// all paths
-	// // Initialize variables
-	// paths := make([][]string, 0)
-	// queue := [][]string{{start}}
-	// visited := make(map[string]bool)
+// all paths
+// // Initialize variables
+// paths := make([][]string, 0)
+// queue := [][]string{{start}}
+// visited := make(map[string]bool)
 
-	// // Breadth-first search
-	// for len(queue) > 0 {
-	// 	currentPath := queue[0]
-	// 	queue = queue[1:]
-	// 	node := currentPath[len(currentPath)-1]
+// // Breadth-first search
+// for len(queue) > 0 {
+// 	currentPath := queue[0]
+// 	queue = queue[1:]
+// 	node := currentPath[len(currentPath)-1]
 
-	// 	if node == end {
-	// 		// If the current node is the end node, append the path to the result
-	// 		paths = append(paths, currentPath)
-	// 		break
-	// 	}
+// 	if node == end {
+// 		// If the current node is the end node, append the path to the result
+// 		paths = append(paths, currentPath)
+// 		break
+// 	}
 
-	// 	// Mark the current node as visited
-	// 	visited[node] = true
-	// 	var allUrl = scraper.GetScrapeLinks(node)
-	// 	fmt.Println(node, " : ", len(allUrl))
-	// 	for i := 0; i < len(allUrl); i++ {
-	// 		if _, exists := graph[allUrl[i]]; !exists {
-	// 			graph.AddVertex(allUrl[i])
-	// 			graph.AddEdge(node, allUrl[i])
-	// 		}
-	// 	}
-	
-	// 	// Explore neighbors
-	// 	for _, neighbor := range graph[node] {
-	// 		// Check if the neighbor has not been visited
-	// 		if !visited[neighbor] {
-	// 			// Add the neighbor to the current path and enqueue it
-	// 			newPath := append(append([]string{}, currentPath...), neighbor)
-	// 			queue = append(queue, newPath)
-	// 		}
-	// 	}
-	// }
+// 	// Mark the current node as visited
+// 	visited[node] = true
+// 	var allUrl = scraper.GetScrapeLinks(node)
+// 	fmt.Println(node, " : ", len(allUrl))
+// 	for i := 0; i < len(allUrl); i++ {
+// 		if _, exists := graph[allUrl[i]]; !exists {
+// 			graph.AddVertex(allUrl[i])
+// 			graph.AddEdge(node, allUrl[i])
+// 		}
+// 	}
 
-	// // Return the found paths
-	// return paths 
+// 	// Explore neighbors
+// 	for _, neighbor := range graph[node] {
+// 		// Check if the neighbor has not been visited
+// 		if !visited[neighbor] {
+// 			// Add the neighbor to the current path and enqueue it
+// 			newPath := append(append([]string{}, currentPath...), neighbor)
+// 			queue = append(queue, newPath)
+// 		}
+// 	}
+// }
+
+// // Return the found paths
+// return paths
 // }
 
 func ShortestPath(graph Graph, start, end string) []string {
 	queue := []string{start}
 	visited := make(map[string]bool)
 	parent := make(map[string]string)
-   
+
 	for len(queue) > 0 {
 		node := queue[0]
-		queue = queue[1:]	
+		queue = queue[1:]
 
 		visited[node] = true
 		var allUrl = scraper.GetScrapeLinks(node)
@@ -97,19 +97,19 @@ func ShortestPath(graph Graph, start, end string) []string {
 				graph.AddEdge(node, allUrl[i])
 			}
 		}
-	
+
 		if node == end {
 			path := []string{end}
-				for parent[node] != start {
+			for parent[node] != start {
 				path = append([]string{parent[node]}, path...)
 				node = parent[node]
 			}
 			path = append([]string{start}, path...)
 			return path
 		}
-	
+
 		neighbors := graph[node] // Get neighbors of the current node
-	
+
 		for _, neighbor := range neighbors {
 			if !visited[neighbor] {
 				queue = append(queue, neighbor) // Add neighbor to the queue
@@ -118,11 +118,11 @@ func ShortestPath(graph Graph, start, end string) []string {
 			}
 		}
 	}
-   
+
 	return nil // no path found
 }
 
-func SingleShortestPath(startPage, endPage string) ([]string) {
+func SingleShortestPath(startPage, endPage string) []string {
 	graph := make(Graph)
 	shortestPath := ShortestPath(graph, startPage, endPage)
 
