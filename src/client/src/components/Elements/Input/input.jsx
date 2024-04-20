@@ -10,10 +10,6 @@ function Input(props){
     const [selectedItem, setSelectedItem] = useState(-1)
     const [isVisible, setIsVisible] = useState(true);
 
-    const toggleVisibility = () => {
-      setIsVisible(!isVisible);
-    };
-
     const handleChange = e => {
         setSearch(e.target.value)
     }
@@ -34,8 +30,7 @@ function Input(props){
             }
         } else {
             setSelectedItem(-1)
-        }
-        
+        }        
     }
 
     useEffect(() => {
@@ -74,7 +69,7 @@ function Input(props){
             <div>
 
             </div>
-            <div className="search_result mt-100 bg-white absolute top-full z-10" style={{width: '90%'}}>
+            <div className="search_result mt-100 bg-white absolute top-full" style={{width: '90%'}}>
                 {
                 isVisible && search !== "" &&(options.map((data, index) => {
                     return (
