@@ -86,8 +86,8 @@ function Input(props){
                         key={index}
                         // className="px-5 py-2 cursor-pointer text-xl block"
                         className = {selectedItem === index ?
-                            "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 bg-blue-200 " :
-                            "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400"
+                            "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 bg-blue-200 rounded-xl " :
+                            "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 rounded-xl"
                         }
                         onClick={() => handleOptionClick(data.label)}
                     > 

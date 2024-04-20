@@ -17,7 +17,7 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="sticky  backdrop-blur-sm top-0">
+    <div className="sticky backdrop-blur-sm top-0">
       <nav className={ `${roboto.className} flex flex-wrap w-[100%] items-center justify-between bg-[transparent] md:p-0` }  >
       <h1 className="p-3 px-4 text-2xl text-white">
         <Link href="/" className="link-underline link-underline-black">

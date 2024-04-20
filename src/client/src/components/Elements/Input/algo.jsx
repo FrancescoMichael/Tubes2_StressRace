@@ -17,7 +17,7 @@ function Algo(props) {
     }
 
     return (
-        <div className= "d-flex justify-content-center mt-5">
+        <div className= "d-flex justify-content-center mt-5 mb-5">
             <div style={{ color: 'white', fontSize: '20px', display: 'inline-block'}}>Select Your Algorithm</div>
             <div className={ `${roboto.className} flex flex-wrap w-[100%] items-center text-center justify-between bg-[transparent] md:p-0 mt-2`}>
                 

@@ -67,10 +67,10 @@ function InputForm() {
     return (
         <>
             <Algo setAlgorithmChoice = {setAlgorithm}/>
-            <form onSubmit={handleSubmit} className="space-y-4" id="form">
-                <div className="container-search">
+            <form onSubmit={handleSubmit} id="form">
+                <div className="flex container-search">
                     <div className="box">
-                        <Input type="text" placeholder="Start page..." name="starting-page" className="text-white" setInputSearch={setSearchStart} value={searchStart}></Input>
+                        <Input type="text" placeholder="Start page..." name="starting-page" className="text-white text-lg" setInputSearch={setSearchStart} value={searchStart}></Input>
                     </div>
                     <div className="swap">
                         <button type ="swap">
@@ -78,7 +78,7 @@ function InputForm() {
                         </button>
                     </div>
                     <div className="box">
-                        <Input type="text" placeholder="Target page..." name="target-page" className="text-white" setInputSearch={setSearchTarget} value={searchTarget}></Input>
+                        <Input type="text" placeholder="Target page..." name="target-page" className="text-white text-lg md:filter-none" setInputSearch={setSearchTarget} value={searchTarget}></Input>
                     </div>
                 </div>
 
