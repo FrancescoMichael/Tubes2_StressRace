@@ -28,6 +28,7 @@ input{
     background-color: rgb(60, 60, 60);
     border: none;
     height: 50px;
+    color: white;
 }
 
 input:hover{
@@ -39,8 +40,9 @@ input::placeholder{
     font-size: 20px;
 }
 
-.main-title{
-
+select{
+    background-color: rgb(60, 60, 60);
+    color: white;
 }
 
 .container-search{
@@ -65,6 +67,7 @@ input::placeholder{
     height: 50px;
     margin: 20px;
     box-sizing: border-box;
+    color: white;
 }
 
 
@@ -79,7 +82,7 @@ input::placeholder{
     .box{
         width: 100%;
     }
-    .swap img{
+    .swap{
         transform: rotate(90deg);
     }
 }

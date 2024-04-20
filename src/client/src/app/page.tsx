@@ -2,6 +2,7 @@ import Image from "next/image";
 import Input from "@/components/Elements/Input/input"
 import InputForm from "@/components/Elements/Input/form"
 import Algo from "@/components/Elements/Input/algo"
+import MyComponent from "@/components/Elements/Input/lee"
 
 
 export default function Home() {
@@ -14,10 +15,9 @@ export default function Home() {
 
       <Algo>
       </Algo>
-      
-      <InputForm>
-      </InputForm>
 
+      <InputForm>
+      </InputForm>      
 
     </main>
   );

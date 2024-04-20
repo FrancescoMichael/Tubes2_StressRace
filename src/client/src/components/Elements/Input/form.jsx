@@ -9,6 +9,7 @@ function InputForm() {
         const formData = new FormData(event.target);
         const startingPage = formData.get('starting-page');
         const targetPage = formData.get('target-page');
+        
         console.log('Starting Page:', startingPage, 'Target Page:', targetPage);
     };
 
@@ -16,11 +17,11 @@ function InputForm() {
         <form onSubmit={handleSubmit} className="space-y-4" id="form">
             <div className="container-search">
                 <div className="box">
-                    <Input type="text" placeholder="Start page..." name="starting-page"></Input>
+                    <Input type="text" placeholder="Start page..." name="starting-page" className="text-white"></Input>
                 </div>
                 <div className="swap">
                     <button type ="swap">
-                        <SwapHorizIcon fontSize="large" style={{ color: 'white' }} />
+                        <SwapHorizIcon style={{ color: 'white', fontSize: '50px'}} />
                     </button>
                 </div>
                 <div className="box">
