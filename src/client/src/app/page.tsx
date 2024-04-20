@@ -19,17 +19,9 @@ export default function Home() {
       </Algo>
 
       <InputForm>
-      </InputForm>      
+      </InputForm>
 
-      <InputForm>
-      </InputForm>
-      
-      <InputForm>
-      </InputForm>
-      
-      <InputForm>
-      </InputForm>
-      <Result />
+      {/* <Result /> */}
 
     </main>
   );

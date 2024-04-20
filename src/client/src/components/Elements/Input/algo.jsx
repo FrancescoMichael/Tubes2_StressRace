@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {roboto} from "@/app/ui/font"
 
 function Algo() {
-    const [value, setValue] = useState('')
+    const [value, setValue] = useState(1)
 
     const options = [
         {label: "BFS", value: 1},

@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from '@mui/icons-material/Search';
 
 function Input(props){
-    const { type, placeholder, name } = props;
+    const { type, placeholder, name, setInputSearch, value } = props;
 
     const [search, setSearch] = useState("");
     const [searchData, setSearchData] = useState([])
     const [selectedItem, setSelectedItem] = useState(-1)
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
 
     const handleChange = e => {
-        setSearch(e.target.value)
+        const inputValue = e.target.value;
+        setSearch(inputValue);
+        setInputSearch(inputValue);
+        setIsVisible(inputValue !== "");
     }
+
+    // console.log(searchData)
 
 
     const handleKeyDown = e => {
@@ -26,7 +29,8 @@ function Input(props){
                 setSearch(options[selectedItem].label);
                 setSearchData([])
                 setSelectedItem(-1)
-                setIsVisible(!isVisible);
+                setIsVisible(false);
+                setInputSearch(options[selectedItem].label);
             }
         } else {
             setSelectedItem(-1)
@@ -51,7 +55,8 @@ function Input(props){
 
     const handleOptionClick = (value) => {
         setSearch(value);
-        setIsVisible(!isVisible);
+        setInputSearch(value);
+        setIsVisible(false);
     }
 
     return (
@@ -63,13 +68,13 @@ function Input(props){
                 name={name} 
                 autoComplete="off"
                 onChange={handleChange}
-                value={search}
+                value={value}
                 onKeyDown={handleKeyDown}
             />
             <div>
 
             </div>
-            <div className="search_result mt-100 bg-white absolute top-full" style={{width: '90%'}}>
+            <div className="search_result mt-100 bg-white absolute top-full z-10" style={{width: '90%'}}>
                 {
                 isVisible && search !== "" &&(options.map((data, index) => {
                     return (
