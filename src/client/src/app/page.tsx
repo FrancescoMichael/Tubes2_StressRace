@@ -21,15 +21,8 @@ export default function Home() {
       <InputForm>
       </InputForm>      
 
-      <InputForm>
-      </InputForm>
-      
-      <InputForm>
-      </InputForm>
-      
-      <InputForm>
-      </InputForm>
-      <Result />
+      <Result>
+      </Result>
 
     </main>
   );
