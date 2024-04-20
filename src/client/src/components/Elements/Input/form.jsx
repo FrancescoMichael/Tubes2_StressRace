@@ -71,8 +71,8 @@ function InputForm() {
     return (
         <>
             <Algo setAlgorithmChoice = {setAlgorithm}/>
-            <form onSubmit={handleSubmit} className="space-y-4" id="form">
-                <div className="container-search">
+            <form onSubmit={handleSubmit} id="form">
+                <div className="flex container-search">
                     <div className="box">
                         <Input type="text" placeholder="Start page..." name="starting-page" className="text-white" setInputSearch={setSearchStart} setURLSearch = {setURLStart} value={searchStart}></Input>
                     </div>

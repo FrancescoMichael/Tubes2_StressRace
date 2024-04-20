@@ -27,7 +27,8 @@ func main() {
 
 	start := time.Now()
 
-	hasil := algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 5)
+	// hasil := algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 5)
+	hasil := algorithm.Bfs(urlStart, urlEnd)
 
 	end := time.Now()
 
