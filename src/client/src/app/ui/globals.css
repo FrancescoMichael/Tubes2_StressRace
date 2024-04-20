@@ -3,7 +3,19 @@
 @tailwind utilities;
 
 body{
-    background-color: #222831;
+    background-color: #000000;
+}
+
+nav{
+    border-bottom: 1px solid rgb(60, 60, 60);
+}
+
+h1{
+    margin-left: 5%;
+}
+
+ul{
+    margin-right: 5%;
 }
 
 .mag {
@@ -11,10 +23,89 @@ body{
     transform: rotateY(180deg);
 }
 
+input{
+    text-align: center;
+    background-color: rgb(60, 60, 60);
+    border: none;
+    height: 50px;
+}
+
+input:hover{
+    background-color: rgb(85, 85, 85);
+}
+
+input::placeholder{
+    color: lightgray;
+    font-size: 20px;
+}
+
 .main-title{
 
 }
 
-#form {
-    width: min(70vw, 400px);
+.container-search{
+    margin-top: 5%;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-flow: wrap;
+}
+
+.box{
+    width: 400px;
+    height: 50px;
+    margin: 20px;
+    box-sizing: border-box;
+}
+
+.swap{
+    width: 50px;
+    height: 50px;
+    margin: 20px;
+    box-sizing: border-box;
+}
+
+
+
+@media screen and (max-width:1200px){
+    .box{
+        width: 400px;
+    }
+}
+
+@media screen and (max-width:1100px){
+    .box{
+        width: 100%;
+    }
+    .swap img{
+        transform: rotate(90deg);
+    }
+}
+
+
+@layer utilities {
+    @keyframes gradientChange {
+        0% {
+            background-position: 0%
+        }
+
+        50% {
+            background-position: 100%
+        }
+
+        100% {
+            background-position: 0%
+        }
+    }
+
+    .gradient {
+        background: linear-gradient(90deg, blue, red);
+        background-size: 200% 200%;
+    }
+
+    .element-to-rotate {
+        animation: gradientChange 2s ease infinite;
+    }
 }

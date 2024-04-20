@@ -1,17 +1,23 @@
 import Image from "next/image";
 import Input from "@/components/Elements/Input/input"
 import InputForm from "@/components/Elements/Input/form"
+import Algo from "@/components/Elements/Input/algo"
 
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
+    <main className="flex flex-col items-center justify-center p-12">
       <div className="flex flex-row items-center">
-        <Image src="/magnifyingGlass.svg" width={100} height={100} alt="magnifyingGlass" className="mag"></Image>
-        <h1 className="text-6xl text-white"> Wiki Game Solver </h1>
+        <Image src="/magnifyingGlass.svg" width={120} height={120} alt="magnifyingGlass" className="mag"></Image>
+        <h1 className="text-7xl text-white font-bold"> Wiki Game Solver </h1>
       </div>
+
+      <Algo>
+      </Algo>
+      
       <InputForm>
       </InputForm>
+
 
     </main>
   );
