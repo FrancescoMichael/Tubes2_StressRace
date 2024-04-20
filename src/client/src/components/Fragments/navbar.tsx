@@ -3,15 +3,17 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import {roboto} from "@/app/ui/font"
+import { usePathname } from "next/navigation";
+import clsx from 'clsx';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
+  const pathname = usePathname()
 
   const links = [
     { name: "Home", link: "/" },
     { name: "WikiRace", link: "wiki-race"},
     { name: "About Us", link: "about" },
-   
   ];
 
   return (
@@ -25,10 +27,18 @@ const Navbar = () => {
 
       <ul className="hidden md:flex">
         {links.map(({ name, link }) => (
-          <li key={name} className="px-4 cursor-pointer capitalize font-medium text-gray-500 hover:text-white focus:text-white duration-200 link-underline">
-            <Link href={`/${link}`}>{name}</Link>
+          <li key={name} >
+            <Link href={`/${link}`}
+              className={clsx(
+                "px-4 cursor-pointer capitalize font-medium text-gray-500 hover:text-white focus:text-white duration-200 link-underline",
+                {
+                  'text-white': pathname === link,
+                },
+              )}
+            >{name}</Link>
           </li>
-        ))}
+        ))
+        }
       </ul>
 
       <button

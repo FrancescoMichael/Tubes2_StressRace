@@ -6,6 +6,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 function InputForm() {
     const [searchStart, setSearchStart] = useState("")
     const [urlStart, setURLStart] = useState("")
+    const [notification, setNotification] = useState("");
 
     const [searchTarget, setSearchTarget] = useState("")
     const [urlTarget, setURLTarget] = useState("")
@@ -21,6 +22,15 @@ function InputForm() {
         let temp = searchStart;
         setSearchStart(searchTarget)
         setSearchTarget(temp);
+    }
+
+    const handleSearch = () => {
+        if(searchTarget === "" || searchStart === "") {
+            console.log(notification);
+            setNotification("Isi data dengan lengkap!");
+        } else {
+            setNotification("");
+        }
     }
 
     return (
@@ -40,9 +50,13 @@ function InputForm() {
             </div>
 
             <div className="flex flex-col items-center justify-center">
-                <button type="submit" className="bg-gradient-to-r from-blue-500 to-red-500 text-white px-4 py-2 text-xl rounded font-medium focus:ring ring-black ring-opacity-10 gradient element-to-rotate">
-                    Search!
+                <button type="submit" className="bg-white text-black px-4 py-2 text-xl rounded-xl font-medium" onClick = {handleSearch}>
+                {/* <button type="submit" className="bg-gradient-to-r from-blue-500 to-red-500 text-white px-4 py-2 text-xl rounded-xl font-medium focus:ring ring-black ring-opacity-10 gradient element-to-rotate" onClick = {handleSearch}> */}
+                    Search
                 </button>
+                {notification && (
+                    <div className="text-red-500">{notification}</div>
+                )}
             </div>
         </form>
     );

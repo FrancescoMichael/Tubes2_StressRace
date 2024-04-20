@@ -21,7 +21,7 @@ export default function Home() {
       <InputForm>
       </InputForm>
 
-      {/* <Result /> */}
+      <Result />
 
     </main>
   );
