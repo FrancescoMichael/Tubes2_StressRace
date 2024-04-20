@@ -6,11 +6,13 @@ import (
 	"os"
 	algorithm "server/pkg/algorithm"
 	"server/pkg/scraper"
+	"time"
 )
 
 func main() {
 	scraper.LoadCache()
-	defer scraper.WriteCsv("data.txt")
+	// defer scraper.WriteCsv("data.txt")
+	defer scraper.WriteJSON("data.json")
 	var reader = bufio.NewReader(os.Stdin)
 	fmt.Print("Url start page : ")
 	urlStart, err := reader.ReadString('\n')
@@ -28,12 +30,20 @@ func main() {
 	// for _, var2 := range hasil {
 	// 	fmt.Println(var2)
 	// }
+	start := time.Now()
 
-	hasil := algorithm.IdsFirst(urlStart, urlEnd, 5)
+	hasil := algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 5)
+
+	end := time.Now()
+
+	totalTime := end.Sub(start)
+	fmt.Println("time : ", totalTime)
 
 	if hasil != nil {
 		fmt.Printf("Depth : %d \n", len(hasil)-1)
+
 		fmt.Println(hasil)
+
 	} else {
 		fmt.Println("No possible solution")
 	}
