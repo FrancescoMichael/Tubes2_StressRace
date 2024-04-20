@@ -37,9 +37,8 @@ func dfs(currUrl string, endPage string, currDepth int, visited map[string]bool,
 	if currDepth <= 0 {
 		return
 	}
-	var allUrl []string
-	err := scraper.WebScraping(currUrl, &allUrl)
-	if err != nil {
+	var allUrl = scraper.GetScrapeLinks(currUrl)
+	if allUrl == nil {
 		return
 	}
 	visited[currUrl] = true
@@ -78,9 +77,8 @@ func DfsFirst(currUrl string, endPage string, depth int, visited map[string]bool
 		return false, nil
 	}
 
-	var allUrl []string
-	err := scraper.WebScraping(currUrl, &allUrl)
-	if err != nil {
+	var allUrl = scraper.GetScrapeLinks(currUrl)
+	if allUrl == nil {
 		return false, nil
 	}
 
