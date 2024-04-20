@@ -35,7 +35,7 @@ func main() {
 			fmt.Println(var2)
 		}
 	} else {
-		hasil = algorithm.bfs(urlStart, urlEnd)
+		hasil := algorithm.bfs(urlStart, urlEnd)
 		fmt.Println("BFS")
 		for _, var2 := range hasil { 
 			fmt.Println(var2)

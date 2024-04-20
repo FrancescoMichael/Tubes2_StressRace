@@ -8,6 +8,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+var linkCache = make(map[string][]string)
+
 func WebScraping(url string, resultData *[]string) error {
 	// Check if url is wikipedia
 	if !strings.Contains(url, "wikipedia.org") {
@@ -45,4 +47,17 @@ func WebScraping(url string, resultData *[]string) error {
 	})
 
 	return nil
+}
+
+func GetScrapeLinks(link string) []string {
+	links, exist := linkCache[link]
+	if !exist {
+		err := WebScraping(link, &links)
+		if err != nil {
+			return nil
+		}
+		linkCache[link] = links
+		return links
+	}
+	return links
 }
