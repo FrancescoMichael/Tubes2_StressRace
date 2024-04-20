@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close"
 
 function Input(props){
-    const { type, placeholder, name, setInputSearch, value } = props;
+    const { type, placeholder, name, setInputSearch, setURLSearch, value } = props;
 
     const [search, setSearch] = useState("");
+    const [url, setURL] = useState("")
     const [searchData, setSearchData] = useState([])
     const [selectedItem, setSelectedItem] = useState(-1)
     const [isVisible, setIsVisible] = useState(false);
@@ -29,6 +30,8 @@ function Input(props){
             else if (e.key === "Enter" && selectedItem >= 0) {
                 setSearch(options[selectedItem].label);
                 setSearchData([])
+                setURL(options[selectedItem].value);
+                setURLSearch(options[selectedItem].value);
                 setSelectedItem(-1)
                 setIsVisible(false);
                 setInputSearch(options[selectedItem].label);
@@ -54,9 +57,11 @@ function Input(props){
         value: urls[index]
     })) : [];
 
-    const handleOptionClick = (value) => {
-        setSearch(value);
-        setInputSearch(value);
+    const handleOptionClick = (label, value) => {
+        setSearch(label);
+        setInputSearch(label);
+        setURL(value);
+        setURLSearch(value);
         setIsVisible(false);
     }
 
@@ -89,7 +94,7 @@ function Input(props){
                             "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 bg-blue-200 " :
                             "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400"
                         }
-                        onClick={() => handleOptionClick(data.label)}
+                        onClick={() => handleOptionClick(data.label, data.value)}
                     > 
                         {data.label}
                     </div>
