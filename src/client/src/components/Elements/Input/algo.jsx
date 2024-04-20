@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import {roboto} from "@/app/ui/font"
 
-function Algo() {
+function Algo(props) {
+    const { setAlgorithmChoice } = props;
     const [value, setValue] = useState(1)
 
     const options = [
@@ -12,6 +13,7 @@ function Algo() {
 
     function handleSelect(event) {
         setValue(event.target.value)
+        setAlgorithmChoice(event.target.value)
     }
 
     return (

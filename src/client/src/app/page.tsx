@@ -15,11 +15,7 @@ export default function Home() {
         <h1 className="text-7xl text-white font-bold"> Wiki Game Solver </h1>
       </div>
 
-      <Algo>
-      </Algo>
-
-      <InputForm>
-      </InputForm>
+      <InputForm/>
 
       <Result />
 
