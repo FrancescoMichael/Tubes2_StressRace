@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Select from 'react-select'
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from '@mui/icons-material/Search';
 
