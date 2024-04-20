@@ -1,41 +1,98 @@
 "use client";
-import React from 'react';
+import React , { useState }from 'react';
 import Input from './input'; 
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import Algo from './algo';
 
 function InputForm() {
+    const [notification, setNotification] = useState("")
+    const [algorithm, setAlgorithm] = useState(1)
+
+    const [searchStart, setSearchStart] = useState("")
+    const [urlStart, setURLStart] = useState("")
+
+    const [searchTarget, setSearchTarget] = useState("")
+    const [urlTarget, setURLTarget] = useState("")
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const startingPage = formData.get('starting-page');
-        const targetPage = formData.get('target-page');
-        
-        console.log('Starting Page:', startingPage, 'Target Page:', targetPage);
+        // const startingPage = formData.get('starting-page');
+        // const targetPage = formData.get('target-page');
     };
 
+    const handleSwap = () => {
+        let temp = searchStart;
+        setSearchStart(searchTarget)
+        setSearchTarget(temp);
+    }
+
+    const handleSearch = async () => {
+        if(searchTarget === "" || searchStart === "") {
+            console.log(notification);
+            setNotification("Isi data dengan lengkap!");
+        } else {
+            setNotification("");
+            console.log(`Start : ${searchStart}\nEnd : ${searchTarget}\nAlgoritma : ${algorithm}`)
+            const algorithmString = algorithm.toString();
+            
+            // Kirim data ke backend
+            await fetch('http://localhost:8080/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    searchStart,
+                    searchTarget,
+                    algorithm: algorithmString,
+                }),
+                credentials: 'include',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response from backend:', data);
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
+        }
+    }
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-4" id="form">
-            <div className="container-search">
-                <div className="box">
-                    <Input type="text" placeholder="Start page..." name="starting-page" className="text-white"></Input>
+        <>
+            <Algo setAlgorithmChoice = {setAlgorithm}/>
+            <form onSubmit={handleSubmit} className="space-y-4" id="form">
+                <div className="container-search">
+                    <div className="box">
+                        <Input type="text" placeholder="Start page..." name="starting-page" className="text-white" setInputSearch={setSearchStart} value={searchStart}></Input>
+                    </div>
+                    <div className="swap">
+                        <button type ="swap">
+                            <SwapHorizIcon style={{ color: 'white', fontSize: '50px'}} onClick = {handleSwap}/>
+                        </button>
+                    </div>
+                    <div className="box">
+                        <Input type="text" placeholder="Target page..." name="target-page" className="text-white" setInputSearch={setSearchTarget} value={searchTarget}></Input>
+                    </div>
                 </div>
-                <div className="swap">
-                    <button type ="swap">
-                        <SwapHorizIcon style={{ color: 'white', fontSize: '50px'}} />
+
+                <div className="flex flex-col items-center justify-center">
+                    <button type="submit" className="bg-white text-black px-4 py-2 text-xl rounded-xl font-medium" onClick = {handleSearch}>
+                    {/* <button type="submit" className="bg-gradient-to-r from-blue-500 to-red-500 text-white px-4 py-2 text-xl rounded-xl font-medium focus:ring ring-black ring-opacity-10 gradient element-to-rotate" onClick = {handleSearch}> */}
+                        Search
                     </button>
+                    {notification && (
+                        <div className="text-red-500">{notification}</div>
+                    )}
                 </div>
-                <div className="box">
-                    <Input type="text" placeholder="Target page..." name="target-page"></Input>
-                </div>
-            </div>
-
-
-            <div class="flex flex-col items-center justify-center">
-                <button type="submit" className="bg-gradient-to-r from-blue-500 to-red-500 text-white px-4 py-2 text-xl rounded font-medium focus:ring ring-black ring-opacity-10 gradient element-to-rotate">
-                    Search!
-                </button>
-            </div>
-        </form>
+            </form>
+        </>
     );
 }
 

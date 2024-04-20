@@ -1,18 +1,22 @@
-import { useState, useEffect } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from '@mui/icons-material/Search';
+import { useState, useEffect, useRef } from "react";
+import CloseIcon from "@mui/icons-material/Close"
 
 function Input(props){
-    const { type, placeholder, name } = props;
+    const { type, placeholder, name, setInputSearch, value } = props;
 
     const [search, setSearch] = useState("");
     const [searchData, setSearchData] = useState([])
     const [selectedItem, setSelectedItem] = useState(-1)
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
 
     const handleChange = e => {
-        setSearch(e.target.value)
+        const inputValue = e.target.value;
+        setSearch(inputValue);
+        setInputSearch(inputValue);
+        setIsVisible(inputValue !== "");
     }
+
+    // console.log(searchData)
 
 
     const handleKeyDown = e => {
@@ -26,7 +30,8 @@ function Input(props){
                 setSearch(options[selectedItem].label);
                 setSearchData([])
                 setSelectedItem(-1)
-                setIsVisible(!isVisible);
+                setIsVisible(false);
+                setInputSearch(options[selectedItem].label);
             }
         } else {
             setSelectedItem(-1)
@@ -51,25 +56,29 @@ function Input(props){
 
     const handleOptionClick = (value) => {
         setSearch(value);
-        setIsVisible(!isVisible);
+        setInputSearch(value);
+        setIsVisible(false);
     }
 
     return (
         <div className="p-5 w-full h-16 border-b border-white border-b-0 flex flex-col items-center relative">
             <input 
                 type={type} 
-                className="text-sm border rounded w-full py-2 px-3 ext-slate-700" 
+                className="text-sm border rounded-xl w-full py-2 px-3 ext-slate-700" 
                 placeholder={placeholder} 
                 name={name} 
                 autoComplete="off"
                 onChange={handleChange}
-                value={search}
+                value={value}
                 onKeyDown={handleKeyDown}
             />
-            <div>
-
-            </div>
-            <div className="search_result mt-100 bg-white absolute top-full" style={{width: '90%'}}>
+            {/* {search && (
+                    <CloseIcon 
+                        style={{ color: 'white', fontSize: '20px', cursor: 'pointer' }} 
+                      
+                    />
+                )} */}
+            <div className="search_result mt-100 bg-white absolute top-full z-10 rounded-xl" style={{width: '90%'}}>
                 {
                 isVisible && search !== "" &&(options.map((data, index) => {
                     return (
@@ -77,7 +86,7 @@ function Input(props){
                         key={index}
                         // className="px-5 py-2 cursor-pointer text-xl block"
                         className = {selectedItem === index ?
-                            "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 bg-blue-200" :
+                            "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 bg-blue-200 " :
                             "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400"
                         }
                         onClick={() => handleOptionClick(data.label)}

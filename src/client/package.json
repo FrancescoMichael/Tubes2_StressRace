@@ -1,6 +1,12 @@
 {
   "name": "client",
   "version": "0.1.0",
+  "proxy": {
+    "/other-api": {
+      "target": "http://localhost:8080",
+      "secure": false
+    }
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
