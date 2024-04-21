@@ -1,203 +1,37 @@
-"use client"
-import React, { useState } from "react";
-import ResultList from "./ResultList"
-import Pagination from "./Pagination"
+import React, { useState, useEffect } from "react";
+import ResultList from "./ResultList";
+import Pagination from "./Pagination";
+import { getData } from "./DataResult.service"; // Import the getData function
 
 export default function Result() {
-    const data = [
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        
-        {
-          "id": "1",
-          "title": [
-            "Hampi",
-            "Hampi (town)",
-            "Hampi Express",
-            'Michael Jordan'
-          ],
-          "url": [
-            "https://en.wikipedia.org/wiki/Hampi",
-            "https://en.wikipedia.org/wiki/Hampi_(town)",
-            "https://en.wikipedia.org/wiki/Hampi_Express",
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        },
-        {
-          "id": "2",
-          "title": [
-            'Michael',
-            'Michael Jackson',
-            'Michael Jordan',
-            'Michael Jordan'
-          ],
-          "url": [
-            'https://en.wikipedia.org/wiki/Michael',
-            'https://en.wikipedia.org/wiki/Michael_Jackson',
-            'https://en.wikipedia.org/wiki/Michael_Jordan',
-            'https://en.wikipedia.org/wiki/Michael_Jordan'
-          ]
-        }
-    ];
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postPerPage] = useState(6);
 
-    const mappedData = data.map(item => {
-        const options = item.title.map((title, index) => ({
-          label: title,
-          value: item.url[index],
-        }));
-        return options; 
+  useEffect(() => {
+    getData((responseData) => {
+      setData(responseData);
     });
+  }, []);
+  
+  useEffect(() => {
+    console.log("Ini data : ", data);
+  }, [data]);
+  
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [postPerPage, setPostPerPage] = useState(6);
+  const lastPostIndex = currentPage * postPerPage;
+  const firstPostIndex = lastPostIndex - postPerPage;
+  const currentPost = data.slice(firstPostIndex, lastPostIndex);
 
-    const lastPostIndex = currentPage * postPerPage;
-    const firstPostIndex = lastPostIndex - postPerPage;
-    const currentPost = mappedData.slice(firstPostIndex, lastPostIndex);
-
-    return (
-        <>
-            <ResultList dataResults = {currentPost}/>
-            <Pagination 
-                totalPosts = {mappedData.length} 
-                postPerPage = {postPerPage}
-                setCurrentPage={setCurrentPage}
-                currentPage={currentPage}
-            />
-        </>
-        
-    );
+  return (
+    <>
+      <ResultList dataResults={currentPost} />
+      <Pagination
+        totalPosts={data.length}
+        postPerPage={postPerPage}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+      />
+    </>
+  );
 }

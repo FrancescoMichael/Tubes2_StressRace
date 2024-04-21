@@ -35,6 +35,9 @@ function InputForm() {
         if(searchTarget === "" || searchStart === "") {
             console.log(notification);
             setNotification("Please input your data correctly!");
+            setTimeout(() => {
+                setNotification("");
+            }, 2000);
         } else {
             setNotification("");
             // console.log(`Start URL : ${urlStart}\nEnd URL : ${urlTarget}\nAlgoritma : ${algorithm}`)
@@ -92,7 +95,7 @@ function InputForm() {
                         Search!
                     </button>
                     {notification && (
-                        <div className="text-red-500">{notification}</div>
+                        <div className="text-red-500 z-10">{notification}</div>
                     )}
                 </div>
             </form>
