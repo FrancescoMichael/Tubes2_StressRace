@@ -100,6 +100,27 @@ select{
     border-radius: 12px;
 }
 
+.top{
+    font-size: 50px;
+    width: 100%;
+    text-align: center;
+}
+
+.container-member{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-flow: wrap;
+}
+
+.member{
+    width: 30%;
+    min-width: 250px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 25px;
+}
 
 
 @media screen and (max-width:1200px){
