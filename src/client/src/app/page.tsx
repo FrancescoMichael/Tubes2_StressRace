@@ -10,9 +10,9 @@ import Result from "@/components/Elements/Result/Result";
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center p-12">
-      <div className="set flex flex-row items-center font-bold text-transparent bg-clip-text bg-[linear-gradient(to_right,theme(colors.indigo.400),theme(colors.indigo.100),theme(colors.sky.400),theme(colors.fuchsia.400),theme(colors.sky.400),theme(colors.indigo.100),theme(colors.indigo.400))]">
+      <div className="set flex flex-row items-center font-bold]">
         <SearchIcon style={{ color: 'white', fontSize: '200px'}}/>
-        <h1 className="text-7xl "> Wiki Game Solver </h1>
+        <h1 className="text-7xl text-white font-bold"> Wiki Game Solver </h1>
       </div>
 
       <InputForm/>
