@@ -10,12 +10,12 @@ nav{
     border-bottom: 1px solid rgb(60, 60, 60);
 }
 
-h1{
-    margin-left: 3%;
-}
-
 ul{
     margin-right: 3%;
+}
+
+.judul{
+    font-size: 100px;
 }
 
 .mag {
@@ -85,7 +85,7 @@ select{
 
 .box-result{
     width: 40%;
-    min-width: 350px;
+    min-width: 250px;
     box-sizing: border-box;
     border-radius: 12px;
 }
@@ -105,12 +105,26 @@ select{
     .swap{
         transform: rotate(90deg);
     }
+    .judul{
+        font-size: 75px;
+    }
 }
 
-@media screen and (max-width:800px){
+@media screen and (max-width:900px){
     .box-result{
         width: 50%;
     }
+    .judul{
+        font-size: 50px;
+    }
+
+}
+
+@media screen and (max-width:600px){
+    .judul{
+        font-size: 40px;
+    }
+
 }
 
 
