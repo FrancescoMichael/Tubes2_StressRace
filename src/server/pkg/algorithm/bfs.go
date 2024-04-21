@@ -61,7 +61,7 @@ func BfsGoRoutine(start string, end string) ([]string, error) {
 	if !scraper.IsWikiPageUrlExists(&end) {
 		return nil, fmt.Errorf("end page does not exist")
 	}
-	limiter := make(chan int, 50)
+	limiter := make(chan struct{}, 100)
 	queue := []string{start}
 	visited := make(map[string]bool)
 	visited[start] = true
@@ -70,7 +70,7 @@ func BfsGoRoutine(start string, end string) ([]string, error) {
 	var mutex1 sync.Mutex
 
 	for atomic.LoadInt32(&found) == 0 {
-		limiter <- 1
+		limiter <- struct{}{}
 
 		go func() {
 			defer func() { <-limiter }()
