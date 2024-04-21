@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import {inter,lusitana,josefin, roboto, fira} from "./ui/font"
+import { roboto } from "./ui/font"
 import "./ui/globals.css";
 import Navbar from "../components/Fragments/navbar"
 
