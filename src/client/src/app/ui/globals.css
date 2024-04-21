@@ -72,7 +72,7 @@ select{
 }
 
 .swap:hover{
-    color: skyblue;
+    color: rgb(96, 165, 250);
     transition: opacity .3s ease-in-out;
 }
 
