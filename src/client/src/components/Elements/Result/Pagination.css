@@ -16,8 +16,16 @@
     cursor: pointer;
     transition: all 0.3s ease;
     background: transparent;
-    color: #555555;
+    color: #ffffff;
     border-color: #eee;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.pagination button:hover{
+    background-color: grey;
+    border-color: grey;
+    color: black;
 }
 
 .pagination button.active {
