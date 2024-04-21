@@ -41,6 +41,10 @@ func GetSearch(c *gin.Context) {
 
 func GetResult(c *gin.Context) {
 	defer scraper.WriteJSON("links.json")
+	// searchData.URLStart = "https://en.wikipedia.org/wiki/Adolf_Hitler"
+	// searchData.URLTarget = "https://en.wikipedia.org/wiki/Nazi_Germany"
+	// searchData.Algorithm = "1"
+	fmt.Println(searchData.URLStart)
 	var hasil []string
 	var err error
 	scraper.LoadCache()
@@ -89,6 +93,8 @@ func GetResult(c *gin.Context) {
 	// 		},
 	// 	},
 	// }
+
+	fmt.Println("Ini hasil : ", hasil)
 
 	data[0] = Result{
 		ID:    "1",
