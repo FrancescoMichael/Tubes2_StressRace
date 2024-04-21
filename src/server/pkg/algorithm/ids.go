@@ -60,10 +60,10 @@ func IdsFirst(startPage string, endPage string, maxDepth int) ([]string, error) 
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
 
-	if !scraper.IsWikiPageUrlExists(startPage) {
+	if !scraper.IsWikiPageUrlExists(&startPage) {
 		return nil, fmt.Errorf("start page doesn't exists")
 	}
-	if !scraper.IsWikiPageUrlExists(endPage) {
+	if !scraper.IsWikiPageUrlExists(&endPage) {
 		return nil, fmt.Errorf("end page doesn't exists")
 	}
 
@@ -113,10 +113,10 @@ func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
 
-	if !scraper.IsWikiPageUrlExists(startPage) {
+	if !scraper.IsWikiPageUrlExists(&startPage) {
 		return nil, fmt.Errorf("start page doesn't exists")
 	}
-	if !scraper.IsWikiPageUrlExists(endPage) {
+	if !scraper.IsWikiPageUrlExists(&endPage) {
 		return nil, fmt.Errorf("end page doesn't exists")
 	}
 

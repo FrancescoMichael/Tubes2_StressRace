@@ -9,51 +9,64 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
+	"time"
 	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly/v2"
 )
 
-var linkCache = make(map[string][]string)
+var LinkCache = make(map[string][]string)
+var mutexCache = sync.Mutex{}
 
 func WebScraping(url string, resultData *[]string) error {
-	// Check if url is wikipedia
 	if !strings.Contains(url, "wikipedia.org") {
 		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
 	}
 
-	// use net/http to get and validate
-	resp, err := http.Get(url)
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Get(url)
 	if err != nil {
 		return fmt.Errorf("error making GET request: %v", err)
 	}
 	defer resp.Body.Close()
 
-	// Check the HTTP status code
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("received non-200 status code: %d", resp.StatusCode)
 	}
 
-	// Create a goquery document from the HTTP response body
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		return err
 	}
 
-	// Find and process all links in the #bodyContent element
 	doc.Find("#bodyContent a").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
-		if !exists {
-			return // Skip this link if the href attribute does not exist
-		}
-		// Check if the link is internal to Wikipedia
-		if strings.HasPrefix(href, "/wiki/") {
+		if exists && strings.HasPrefix(href, "/wiki/") {
 			*resultData = append(*resultData, "https://en.wikipedia.org"+href)
 		}
 	})
 
 	return nil
+}
+
+func GetScrapeLinksConcurrent(link string) []string {
+	mutexCache.Lock()
+	links, exist := LinkCache[link]
+	mutexCache.Unlock()
+
+	if !exist {
+		links = []string{}
+		if err := WebScraping(link, &links); err != nil {
+			return nil
+		}
+
+		mutexCache.Lock()
+		LinkCache[link] = links
+		mutexCache.Unlock()
+	}
+	return links
 }
 
 func WriteCsv(filename string) error {
@@ -65,7 +78,7 @@ func WriteCsv(filename string) error {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	for key, links := range linkCache {
+	for key, links := range LinkCache {
 		row := append([]string{key}, links...)
 		if err := writer.Write(row); err != nil {
 			return err
@@ -83,7 +96,7 @@ func WriteJSON(filename string) error {
 	defer file.Close()
 
 	encoder := json.NewEncoder(file)
-	err = encoder.Encode(linkCache)
+	err = encoder.Encode(LinkCache)
 	if err != nil {
 		return err
 	}
@@ -112,7 +125,7 @@ func ReadCsv(filename string) error {
 		if len(row) > 1 {
 			key := row[0]
 			links := row[1:]
-			linkCache[key] = links
+			LinkCache[key] = links
 		}
 	}
 
@@ -127,7 +140,7 @@ func ReadJSON(filename string) error {
 	defer file.Close()
 
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&linkCache)
+	err = decoder.Decode(&LinkCache)
 	if err != nil {
 		return err
 	}
@@ -183,14 +196,31 @@ func toCamelCase(input string) string {
 	return strings.Join(words, " ")
 }
 
-func IsWikiPageUrlExists(url string) bool {
+// IsWikiPageUrlExists checks if a Wikipedia page URL exists and updates it to the redirected URL.
+func IsWikiPageUrlExists(url *string) bool {
+	// Custom HTTP client with redirect policy
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			// Update the original URL to the last requested URL
+			*url = req.URL.String()
+			return nil // Continue following redirects
+		},
+		Timeout: 10 * time.Second, // Set a timeout to avoid hanging on slow networks
+	}
 
-	response, err := http.Get(url)
+	// Perform the HTTP GET request
+	response, err := client.Get(*url)
 	if err != nil {
+		fmt.Printf("HTTP request failed: %v\n", err)
 		return false
 	}
-	defer response.Body.Close()
-	return response.StatusCode == 200
+	defer response.Body.Close() // Ensure the response body is closed
+
+	// Update the URL to the final redirected URL if not already done
+	*url = response.Request.URL.String()
+
+	// Check if the status code is in the 2xx range, indicating success
+	return response.StatusCode >= 200 && response.StatusCode < 300
 }
 
 func LoadCache() {
@@ -205,7 +235,7 @@ func LoadCache() {
 }
 
 func WebScrapingColly(url string, resultData *[]string) error {
-	if !IsWikiPageUrlExists(url) {
+	if !IsWikiPageUrlExists(&url) {
 		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
 	}
 
@@ -235,14 +265,15 @@ func WebScrapingColly(url string, resultData *[]string) error {
 }
 
 func GetScrapeLinks(link string) []string {
-	links, exist := linkCache[link]
+	links, exist := LinkCache[link]
 	if !exist {
 		err := WebScraping(link, &links)
 		if err != nil {
 			return nil
 		}
 		if links != nil {
-			linkCache[link] = links
+
+			LinkCache[link] = links
 		}
 
 		return links
@@ -250,14 +281,32 @@ func GetScrapeLinks(link string) []string {
 	return links
 }
 
+// func GetScrapeLinksConcurrent(link string, mute *sync.Mutex) []string {
+// 	links, exist := LinkCache[link]
+// 	if !exist {
+// 		err := WebScraping(link, &links)
+// 		if err != nil {
+// 			return nil
+// 		}
+// 		if links != nil {
+// 			mute.Lock()
+// 			LinkCache[link] = links
+// 			mute.Unlock()
+// 		}
+
+// 		return links
+// 	}
+// 	return links
+// }
+
 func GetScrapeLinksColly(link string) []string {
-	links, exist := linkCache[link]
+	links, exist := LinkCache[link]
 	if !exist {
 		err := WebScrapingColly(link, &links)
 		if err != nil {
 			return nil
 		}
-		linkCache[link] = links
+		LinkCache[link] = links
 		return links
 	}
 	return links
