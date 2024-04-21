@@ -80,8 +80,8 @@ function InputForm() {
                         <Input type="text" placeholder="Start page..." name="starting-page" className="text-white" setInputSearch={setSearchStart} setURLSearch = {setURLStart} value={searchStart}></Input>
                     </div>
                     <div className="swap">
-                        <button type ="swap">
-                            <SwapHorizIcon style={{ color: 'white', fontSize: '50px'}} onClick = {handleSwap}/>
+                        <button type="swap">
+                            <SwapHorizIcon style={{fontSize: '50px'}} onClick = {handleSwap}/>
                         </button>
                     </div>
                     <div className="box">

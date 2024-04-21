@@ -71,6 +71,11 @@ select{
     color: white;
 }
 
+.swap:hover{
+    color: skyblue;
+    transition: opacity .3s ease-in-out;
+}
+
 .SwapHorizIcon{
     padding-top: 100px;
     margin: auto;
