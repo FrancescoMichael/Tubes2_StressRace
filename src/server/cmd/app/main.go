@@ -10,8 +10,7 @@ import (
 )
 
 func main() {
-
-	defer scraper.WriteJSON("links.json")
+	// defer scraper.WriteJSON("links.json") // disable cache for real world testing
 	scraper.LoadCache()
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Start Page Title : ")

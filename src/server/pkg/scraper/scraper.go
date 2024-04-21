@@ -205,9 +205,6 @@ func LoadCache() {
 }
 
 func WebScrapingColly(url string, resultData *[]string) error {
-	// if !strings.Contains(url, "wikipedia.org") {
-	// 	return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
-	// }
 	if !IsWikiPageUrlExists(url) {
 		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
 	}

@@ -7,9 +7,6 @@ import (
 	"sync"
 )
 
-// find all paths version
-// var mutex sync.Mutex
-
 func Ids(startPage string, endPage string, maxDepth int) ([][]string, int) {
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
