@@ -1,4 +1,7 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
+import ResultList from "./ResultList"
+import Pagination from "./Pagination"
 
 export default function Result() {
     const data = [
@@ -176,34 +179,25 @@ export default function Result() {
           value: item.url[index],
         }));
         return options; 
-      });
+    });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postPerPage, setPostPerPage] = useState(6);
+
+    const lastPostIndex = currentPage * postPerPage;
+    const firstPostIndex = lastPostIndex - postPerPage;
+    const currentPost = mappedData.slice(firstPostIndex, lastPostIndex);
 
     return (
-      <div className= "d-flex justify-content-center mt-5 " style={{width: '90%'}}>
-        {mappedData.length > 0 ? (
-        <div>
-          <div className="container-result text-white">
-          {mappedData.map((path, i) => (
-              <div key={i} className= "box-result flex flex-col justify-content-center mt-10 b-10 border-white border-2 p-3" style={{width: '30%'}}>
-                  <h2 className="mx-auto" style={{ color: 'white', fontSize: '20px', display: 'inline-block'}}>PATH {i + 1}</h2>
-                  <ul>
-                      {path.map((link, j) => (
-                      <div className= "flex flex-col justify-content-center mt-5" style={{width: '100%'}}>
-                        <li key={j}>
-                            <a className="mx-auto hover:text-sky-400 duration-200" style={{ fontSize: '20px', display: 'inline-block'}}href={link.value}>{link.label}</a>
-                        </li>
-                      </div>
-                      ))}
-                  </ul>
-              </div>
-          ))}
-          </div>
-        </div>
-        ) : (
-        <div>
-          <h1 style={{ color: 'white', fontSize: '20px', display: 'inline-block'}}>NO RESULT</h1>
-        </div>
-        )}
-      </div>
+        <>
+            <ResultList dataResults = {currentPost}/>
+            <Pagination 
+                totalPosts = {mappedData.length} 
+                postPerPage = {postPerPage}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+            />
+        </>
+        
     );
 }
