@@ -1,3 +1,4 @@
+'use client'
 import InputForm from "@/components/Elements/Input/form"
 import SearchIcon from '@mui/icons-material/Search';
 import Result from "@/components/Elements/Result/Result";

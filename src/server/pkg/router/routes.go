@@ -9,11 +9,18 @@ import (
 	// "../../cmd/app/main"
 )
 
-// Definisikan struktur data untuk menyimpan data pencarian
+// Data structure
+// search input
 type SearchData struct {
     URLStart  string `json:"urlStart"`
     URLTarget string `json:"urlTarget"`
     Algorithm    string `json:"algorithm"`
+}
+// result
+type Result struct {
+    ID    string   `json:"id"`
+	Title []string `json:"title"`
+	URL   []string `json:"url"`
 }
 
 var searchData SearchData
@@ -29,9 +36,44 @@ func GetSearch(c *gin.Context) {
     c.JSON(http.StatusOK, searchData)
 }
 
-// func GetResult(c *gin.Context) {
-// 	c.IndentedJSON(http.StatusCreated, main.result(searchData.SearchStart, searchData.SearchTarget, searchData.Algorithm))
-// }
+func GetResult(c *gin.Context) {
+    data := []Result{
+		{
+			ID: "1",
+			Title: []string{
+				"Hampi",
+				"Hampi (town)",
+				"Hampi Express",
+				"Michael Jordan",
+			},
+			URL: []string{
+				"https://en.wikipedia.org/wiki/Hampi",
+				"https://en.wikipedia.org/wiki/Hampi_(town)",
+				"https://en.wikipedia.org/wiki/Hampi_Express",
+				"https://en.wikipedia.org/wiki/Michael_Jordan",
+			},
+		},
+		{
+			ID: "2",
+			Title: []string{
+				"Michael",
+				"Michael Jackson",
+				"Michael Jordan",
+				"Michael Jordan",
+			},
+			URL: []string{
+				"https://en.wikipedia.org/wiki/Michael",
+				"https://en.wikipedia.org/wiki/Michael_Jackson",
+				"https://en.wikipedia.org/wiki/Michael_Jordan",
+				"https://en.wikipedia.org/wiki/Michael_Jordan",
+			},
+		},
+	}
+
+	c.IndentedJSON(http.StatusCreated, data)
+
+    fmt.Println("halo")
+}
 
 // func GetProperties(c *gin.Context) {
 // 	c.IndentedJSON(http.StatusCreated, main.properties())
@@ -54,7 +96,7 @@ func main() {
 
     // Routes
     router.POST("/api/search", GetSearch)
-	// router.POST("/api/result", GetResult)
+	router.GET("/api/result", GetResult)
 	// router.POST("api/properties", GetProperties)
 
     // Run the server
