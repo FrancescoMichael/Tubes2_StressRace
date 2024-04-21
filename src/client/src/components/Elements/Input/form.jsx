@@ -22,9 +22,13 @@ function InputForm() {
     };
 
     const handleSwap = () => {
-        let temp = searchStart;
+        let tempTitle = searchStart;
         setSearchStart(searchTarget)
-        setSearchTarget(temp);
+        setSearchTarget(tempTitle);
+
+        let tempURL = urlStart;
+        setURLStart(urlTarget)
+        setURLTarget(tempURL);
     }
 
     const handleSearch = async () => {
@@ -33,18 +37,18 @@ function InputForm() {
             setNotification("Isi data dengan lengkap!");
         } else {
             setNotification("");
-            console.log(`Start : ${searchStart}\nEnd : ${searchTarget}\nAlgoritma : ${algorithm}`)
+            // console.log(`Start URL : ${urlStart}\nEnd URL : ${urlTarget}\nAlgoritma : ${algorithm}`)
             const algorithmString = algorithm.toString();
             
             // Kirim data ke backend
-            await fetch('http://localhost:8080/search', {
+            await fetch('http://localhost:8080/api/search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    searchStart,
-                    searchTarget,
+                    urlStart,
+                    urlTarget,
                     algorithm: algorithmString,
                 }),
                 credentials: 'include',
@@ -67,10 +71,10 @@ function InputForm() {
     return (
         <>
             <Algo setAlgorithmChoice = {setAlgorithm}/>
-            <form onSubmit={handleSubmit} className="space-y-4" id="form">
-                <div className="container-search">
+            <form onSubmit={handleSubmit} id="form">
+                <div className="flex container-search">
                     <div className="box">
-                        <Input type="text" placeholder="Start page..." name="starting-page" className="text-white" setInputSearch={setSearchStart} value={searchStart}></Input>
+                        <Input type="text" placeholder="Start page..." name="starting-page" className="text-white" setInputSearch={setSearchStart} setURLSearch = {setURLStart} value={searchStart}></Input>
                     </div>
                     <div className="swap">
                         <button type ="swap">
@@ -78,7 +82,7 @@ function InputForm() {
                         </button>
                     </div>
                     <div className="box">
-                        <Input type="text" placeholder="Target page..." name="target-page" className="text-white" setInputSearch={setSearchTarget} value={searchTarget}></Input>
+                        <Input type="text" placeholder="Target page..." name="target-page" className="text-white" setInputSearch={setSearchTarget} setURLSearch = {setURLTarget} value={searchTarget}></Input>
                     </div>
                 </div>
 
