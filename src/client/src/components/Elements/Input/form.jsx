@@ -34,7 +34,7 @@ function InputForm() {
     const handleSearch = async () => {
         if(searchTarget === "" || searchStart === "") {
             console.log(notification);
-            setNotification("Isi data dengan lengkap!");
+            setNotification("Please input your data correctly!");
         } else {
             setNotification("");
             // console.log(`Start URL : ${urlStart}\nEnd URL : ${urlTarget}\nAlgoritma : ${algorithm}`)
