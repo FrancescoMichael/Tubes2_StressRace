@@ -34,7 +34,10 @@ function InputForm() {
     const handleSearch = async () => {
         if(searchTarget === "" || searchStart === "") {
             console.log(notification);
-            setNotification("Please input your data correctly!");
+            setNotification(" Please input your data correctly!");
+            setTimeout(() => {
+                setNotification("");
+            }, 2000);
         } else {
             setNotification("");
             // console.log(`Start URL : ${urlStart}\nEnd URL : ${urlTarget}\nAlgoritma : ${algorithm}`)
@@ -92,8 +95,14 @@ function InputForm() {
                         Search!
                     </button>
                     {notification && (
-                        <div className="text-red-500">{notification}</div>
-                    )}
+                        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center text-red-500">
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded relative text-lg" role="alert">
+                                <strong class="font-bold">Holy smokes!</strong>
+                                <span class="block sm:inline">{notification}</span>
+
+                            </div>
+                        </div>
+                )}
                 </div>
             </form>
         </>
