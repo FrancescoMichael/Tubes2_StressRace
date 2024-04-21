@@ -1,13 +1,21 @@
 package algorithm
 
 import (
+	"fmt"
 	scraper "server/pkg/scraper"
 	"strings"
 )
 
-func Bfs(start string, end string) []string {
+func Bfs(start string, end string) ([]string, error) {
 	start = strings.TrimSpace(start)
 	end = strings.TrimSpace(end)
+
+	if !scraper.IsWikiPageUrlExists(start) {
+		return nil, fmt.Errorf("start page does not exist")
+	}
+	if !scraper.IsWikiPageUrlExists(end) {
+		return nil, fmt.Errorf("end page does not exist")
+	}
 	queue := []string{start}
 	visited := make(map[string]bool)
 	visited[start] = true
@@ -18,10 +26,10 @@ func Bfs(start string, end string) []string {
 		queue = queue[1:]
 
 		if curr == end {
-			return makePath(parent, start, end)
+			return makePath(parent, start, end), nil
 		}
 
-		var allUrl = scraper.GetScrapeLinksColly(curr)
+		var allUrl = scraper.GetScrapeLinks(curr)
 		if allUrl == nil {
 			continue // Handle nil or handle error if function can error out
 		}
@@ -32,13 +40,13 @@ func Bfs(start string, end string) []string {
 				parent[linkTemp] = curr
 				queue = append(queue, linkTemp)
 				if linkTemp == end {
-					return makePath(parent, start, end)
+					return makePath(parent, start, end), nil
 				}
 			}
 		}
 	}
 
-	return nil // Return nil if end is not reachable
+	return nil, nil // Return nil if end is not reachable
 }
 
 func makePath(parent map[string]string, start string, end string) []string {

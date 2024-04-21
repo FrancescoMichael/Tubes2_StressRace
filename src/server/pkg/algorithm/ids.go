@@ -1,6 +1,7 @@
 package algorithm
 
 import (
+	"fmt"
 	scraper "server/pkg/scraper"
 	"strings"
 	"sync"
@@ -40,7 +41,7 @@ func dfs(currUrl string, endPage string, currDepth int, visited map[string]bool,
 	if currDepth <= 0 {
 		return
 	}
-	var allUrl = scraper.GetScrapeLinksColly(currUrl)
+	var allUrl = scraper.GetScrapeLinks(currUrl)
 	if allUrl == nil {
 		return
 	}
@@ -58,18 +59,26 @@ func dfs(currUrl string, endPage string, currDepth int, visited map[string]bool,
 
 // find path and then exit version
 
-func IdsFirst(startPage string, endPage string, maxDepth int) []string {
+func IdsFirst(startPage string, endPage string, maxDepth int) ([]string, error) {
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
+
+	if !scraper.IsWikiPageUrlExists(startPage) {
+		return nil, fmt.Errorf("start page doesn't exists")
+	}
+	if !scraper.IsWikiPageUrlExists(endPage) {
+		return nil, fmt.Errorf("end page doesn't exists")
+	}
+
 	for depth := 0; depth < maxDepth; depth++ {
 		visited := make(map[string]bool)
 		path := []string{}
 		if found, result := DfsFirst(startPage, endPage, depth, visited, path); found {
-			return result
+			return result, nil
 		}
 
 	}
-	return nil
+	return nil, nil
 }
 
 func DfsFirst(currUrl string, endPage string, depth int, visited map[string]bool, path []string) (bool, []string) {
@@ -80,7 +89,7 @@ func DfsFirst(currUrl string, endPage string, depth int, visited map[string]bool
 		return false, nil
 	}
 
-	var allUrl = scraper.GetScrapeLinksColly(currUrl)
+	var allUrl = scraper.GetScrapeLinks(currUrl)
 	if allUrl == nil {
 		return false, nil
 	}
@@ -103,9 +112,17 @@ func DfsFirst(currUrl string, endPage string, depth int, visited map[string]bool
 var mutex sync.Mutex
 var foundGlobal bool // global indicator if path is found
 
-func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) []string {
+func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string, error) {
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
+
+	if !scraper.IsWikiPageUrlExists(startPage) {
+		return nil, fmt.Errorf("start page doesn't exists")
+	}
+	if !scraper.IsWikiPageUrlExists(endPage) {
+		return nil, fmt.Errorf("end page doesn't exists")
+	}
+
 	var result []string
 	var wg sync.WaitGroup
 
@@ -131,7 +148,7 @@ func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) []string 
 		}
 	}
 
-	return result
+	return result, nil
 }
 
 func DfsFirstGoRoutine(currUrl string, endPage string, depth int, visited map[string]bool, path []string) (bool, []string) {
@@ -158,7 +175,7 @@ func DfsFirstGoRoutine(currUrl string, endPage string, depth int, visited map[st
 	var result []string
 	var found bool
 
-	allUrl := scraper.GetScrapeLinksColly(currUrl)
+	allUrl := scraper.GetScrapeLinks(currUrl)
 	if allUrl == nil {
 		return false, nil
 	}

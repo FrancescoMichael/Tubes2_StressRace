@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
+	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly/v2"
@@ -133,6 +135,64 @@ func ReadJSON(filename string) error {
 	return nil
 }
 
+func TitleToWikiUrl(title string) string {
+	title = strings.TrimSpace(title)
+	title = toCamelCase(title)
+	title = strings.ReplaceAll(title, " ", "_")
+	title = url.QueryEscape(title)
+	return fmt.Sprintf("https://en.wikipedia.org/wiki/%s", title)
+}
+
+func wikiUrlToTitle(wikiUrl string) string {
+	decoded, err := url.QueryUnescape(strings.TrimPrefix(wikiUrl, "https://en.wikipedia.org/wiki/"))
+	if err != nil {
+		return ""
+	}
+	return strings.ReplaceAll(decoded, "_", " ")
+}
+
+func PathToTitle(path []string) []string {
+	var hasil []string
+	for _, link := range path {
+		hasil = append(hasil, wikiUrlToTitle(link))
+	}
+	return hasil
+}
+
+// toCamelCase converts the title into title case. This is only experimental, user best write the title correctly !
+func toCamelCase(input string) string {
+	words := strings.Fields(input) // split string with white space delimiter
+	for i, word := range words {
+		runes := []rune(word)            // convert string to slice of runes, deal with string beyonc ascii
+		if i == 0 || i == len(words)-1 { // Always capitalize the first and last word
+			runes[0] = unicode.ToUpper(runes[0])
+		} else {
+			// Lower case for specific small words in the middle of a title
+			lower := strings.ToLower(word)
+			if lower == "the" || lower == "and" || lower == "in" || lower == "of" || lower == "a" {
+				runes = []rune(lower)
+			} else {
+				runes[0] = unicode.ToUpper(runes[0])
+			}
+		}
+		for j := 1; j < len(runes); j++ {
+			runes[j] = unicode.ToLower(runes[j])
+		}
+		words[i] = string(runes)
+	}
+	return strings.Join(words, " ")
+}
+
+func IsWikiPageUrlExists(url string) bool {
+
+	response, err := http.Get(url)
+	if err != nil {
+		return false
+	}
+	defer response.Body.Close()
+	return response.StatusCode == 200
+}
+
 func LoadCache() {
 	err := ReadJSON("links.json")
 	if err != nil {
@@ -145,7 +205,10 @@ func LoadCache() {
 }
 
 func WebScrapingColly(url string, resultData *[]string) error {
-	if !strings.Contains(url, "wikipedia.org") {
+	// if !strings.Contains(url, "wikipedia.org") {
+	// 	return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
+	// }
+	if !IsWikiPageUrlExists(url) {
 		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
 	}
 
@@ -181,7 +244,10 @@ func GetScrapeLinks(link string) []string {
 		if err != nil {
 			return nil
 		}
-		linkCache[link] = links
+		if links != nil {
+			linkCache[link] = links
+		}
+
 		return links
 	}
 	return links
