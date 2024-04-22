@@ -66,8 +66,7 @@ function InputForm() {
             })
             .then(data => {
                 console.log('Response from backend:', data);
-            }
-            )
+            })
             .catch(error => {
                 console.error('There was a problem with your fetch operation:', error);
             });

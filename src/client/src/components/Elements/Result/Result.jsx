@@ -37,6 +37,18 @@ export default function Result() {
         <span class="sr-only">Loading...</span>
         </div> : null}
       </div>
+      <div className="flex flex-col items-center justify-center text-center text-white text-2xl mt-8">
+        <p className="mb-4">
+          With the minimum of ... degrees
+        </p>
+        <p className="mb-4">
+          We found ... path(s)
+        </p>
+        <p className="mb-4">
+          It takes ... second(s)
+
+        </p>
+      </div>
       <ResultList dataResults={currentPost} />
       <Pagination
         totalPosts={data.length}
