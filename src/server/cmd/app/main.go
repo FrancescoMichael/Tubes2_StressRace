@@ -47,7 +47,7 @@ func main() {
 		hasil, err = algorithm.IdsFirst(urlStart, urlEnd, 10)
 
 	} else if algo_input == 3 {
-		return
+		hasil, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
 	} else if algo_input == 4 {
 		hasil, err = algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 10)
 	} else {
@@ -66,4 +66,26 @@ func main() {
 		fmt.Println(scraper.PathToTitle(hasil))
 	}
 
+	scraper.LinkCache = make(map[string][]string)
+
 }
+
+// func main() {
+// 	router := gin.Default()
+
+// 	// CORS middleware
+// 	router.Use(cors.New(cors.Config{
+// 		AllowOrigins:     []string{"http://localhost:3000"},
+// 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+// 		AllowHeaders:     []string{"Origin", "Content-Type"},
+// 		AllowCredentials: true,
+// 	}))
+
+// 	// Routes
+// 	router.POST("/api/search", router1.GetSearch)
+// 	router.GET("/api/result", router1.GetResult)
+// 	// router.POST("api/properties", GetProperties)
+
+// 	// Run the server
+// 	router.Run("localhost:8080")
+// }
