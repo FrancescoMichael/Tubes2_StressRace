@@ -31,7 +31,7 @@ export default function ResultList({ dataResults }) {
     // );
     return (
         <div className="d-flex justify-content-center mt-5" style={{ width: '90%' }}>
-    {dataResults && dataResults.length > 0 ? (
+    {dataResults && dataResults.length > 0 && !dataResults.some(item => item.title === null || item.url === null) ? (
         <div className="container-result text-white">
             {dataResults.map((item) => (
                 <div key={item.id} className="box-result flex flex-col justify-content-center mt-10 b-10 border-white border-2 p-3" style={{ width: '30%' }}>
@@ -54,6 +54,7 @@ export default function ResultList({ dataResults }) {
         </div>
     )}
 </div>
+
 
     );
 }
