@@ -14,6 +14,8 @@ function InputForm() {
     const [searchTarget, setSearchTarget] = useState("")
     const [urlTarget, setURLTarget] = useState("")
 
+    
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
