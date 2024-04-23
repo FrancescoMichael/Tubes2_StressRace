@@ -17,7 +17,7 @@ type SearchData struct {
 	URLStart  string `json:"urlStart"`
 	URLTarget string `json:"urlTarget"`
 	Algorithm string `json:"algorithm"`
-	Path string `json:"path"`
+	Path      string `json:"path"`
 }
 
 // result
@@ -44,16 +44,21 @@ func GetResult(c *gin.Context) {
 	defer scraper.WriteJSON("links.json")
 	fmt.Println(searchData.URLStart)
 	var hasil []string
+	// var hasillMultPath [][]string
 	var err error
 	scraper.LoadCache()
-	if searchData.Algorithm == "1" {
+	if searchData.Algorithm == "1" && searchData.Path == "1" {
 		hasil, err = algorithm.Bfs(searchData.URLStart, searchData.URLTarget)
 
-	} else if searchData.Algorithm == "2" {
+	} else if searchData.Algorithm == "2" && searchData.Path == "1" {
 		hasil, err = algorithm.IdsFirst(searchData.URLStart, searchData.URLTarget, 9)
-
 	}
+	// } else if searchData.Algorithm == "1" && searchData.Path == "2" {
+	// 	hasillMultPath, err = algorithm.IdsFirstGoRoutineAllPaths(searchData.URLStart, searchData.URLTarget, 9)
 
+	// } else if searchData.Algorithm == "2" && searchData.Path == "2" {
+
+	// }
 	// handle ketika ada error belom ada
 	if err != nil {
 		return
@@ -62,11 +67,11 @@ func GetResult(c *gin.Context) {
 
 	fmt.Println("Ini hasil : ", hasil)
 
-	data[0] = Result{
-		ID:    "1",
-		Title: scraper.PathToTitle(hasil),
-		URL:   hasil,
-	}
+	// data[0] = Result{
+	// 	ID:    "1",
+	// 	Title: scraper.PathToTitle(hasil),
+	// 	URL:   hasil,
+	// }
 
 	c.IndentedJSON(http.StatusCreated, data)
 

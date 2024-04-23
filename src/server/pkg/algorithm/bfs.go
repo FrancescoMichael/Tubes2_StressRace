@@ -8,6 +8,15 @@ import (
 	"sync/atomic"
 )
 
+type node struct {
+	url   string
+	depth int
+}
+
+func appendNode(list []node, newNode node) []node {
+	return append(list, newNode)
+}
+
 func Bfs(start string, end string) ([]string, error) {
 	start = strings.TrimSpace(start)
 	end = strings.TrimSpace(end)
@@ -22,6 +31,7 @@ func Bfs(start string, end string) ([]string, error) {
 	visited := make(map[string]bool)
 	visited[start] = true
 	parent := make(map[string]string)
+	// parents := make(map[string][]string)
 
 	for len(queue) > 0 {
 		curr := queue[0]
@@ -117,6 +127,69 @@ func BfsGoRoutine(start string, end string) ([]string, error) {
 	return makePath(parent, start, end), nil
 }
 
+func BfsMultPath(start string, end string) ([][]string, error) {
+	start = strings.TrimSpace(start)
+	end = strings.TrimSpace(end)
+
+	if !scraper.IsWikiPageUrlExists(&start) {
+		return nil, fmt.Errorf("start page does not exist")
+	}
+	if !scraper.IsWikiPageUrlExists(&end) {
+		return nil, fmt.Errorf("end page does not exist")
+	}
+	startNode := node{
+		url:   start,
+		depth: 0,
+	}
+	var queue []node
+	queue = appendNode(queue, startNode)
+	visited := make(map[string]bool)
+	visited[start] = true
+	parent := make(map[string][]string)
+	// parents := make(map[string][]string)
+	var maxDepth = 999
+
+	for len(queue) > 0 {
+		curr := queue[0]
+		queue = queue[1:]
+
+		if curr.depth > maxDepth {
+			break
+		}
+
+		if curr.url == end && curr.depth <= maxDepth {
+			// fmt.Println(curr.url)
+			maxDepth = curr.depth
+			// fmt.Println(len(queue))
+			if curr.depth == 0 || curr.depth == 1 {
+				break
+			}
+
+		}
+
+		var allUrl = scraper.GetScrapeLinks(curr.url)
+		if allUrl == nil {
+			continue // Handle nil or handle error if function can error out
+		}
+		currDepth := curr.depth
+		// fmt.Println(currDepth)
+		for _, linkTemp := range allUrl {
+			if !visited[linkTemp] {
+				visited[linkTemp] = true
+				parent[linkTemp] = append(parent[linkTemp], curr.url)
+				newNode := node{
+					url:   linkTemp,
+					depth: currDepth + 1,
+				}
+				queue = appendNode(queue, newNode)
+
+			}
+		}
+	}
+
+	return makePathAll(parent, start, end), nil // Return nil if end is not reachable
+}
+
 func makePath(parent map[string]string, start string, end string) []string {
 	path := []string{}
 	curr := end
@@ -127,4 +200,25 @@ func makePath(parent map[string]string, start string, end string) []string {
 	}
 	path = append([]string{start}, path...)
 	return path
+}
+func makePathAll(parent map[string][]string, start string, end string) [][]string {
+	if start == end {
+		return [][]string{{start}}
+	}
+	var paths [][]string
+
+	if _, exists := parent[end]; !exists {
+		return nil
+	}
+
+	for _, p := range parent[end] {
+
+		parentPaths := makePathAll(parent, start, p)
+
+		for _, path := range parentPaths {
+			paths = append(paths, append(path, end))
+		}
+	}
+
+	return paths
 }

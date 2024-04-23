@@ -21,11 +21,11 @@
 // 	// Routes
 // 	router.POST("/api/search", routers.GetSearch)
 // 	router.GET("/api/result", routers.GetResult)
-// 	// router.POST("api/properties", GetProperties)
 
-//		// Run the server
-//		router.Run("localhost:8080")
-//	}
+// 	// Run the server
+// 	router.Run("localhost:8080")
+// }
+
 package main
 
 import (
@@ -72,8 +72,8 @@ func main() {
 		var allPath [][]string
 		start := time.Now()
 		if algo_input == 1 {
-			hasil, err = algorithm.Bfs(urlStart, urlEnd)
-
+			// hasil, err = algorithm.Bfs(urlStart, urlEnd)
+			allPath, err = algorithm.BfsMultPath(urlStart, urlEnd)
 		} else if algo_input == 2 {
 			hasil, err = algorithm.IdsFirst(urlStart, urlEnd, 10)
 
@@ -89,7 +89,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 
-		} else if algo_input == 4 {
+		} else if algo_input == 4 || algo_input == 1 {
 			fmt.Println("Time : ", end.Sub(start))
 			fmt.Printf("Depth : %d\n", len(hasil))
 			fmt.Println(allPath)
