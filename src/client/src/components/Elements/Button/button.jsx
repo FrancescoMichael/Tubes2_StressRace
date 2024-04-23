@@ -7,7 +7,6 @@ function Button(props){
 			onClick = {onClick}
 		> 
 			{text}
-			
         </button>
 	);
 }
