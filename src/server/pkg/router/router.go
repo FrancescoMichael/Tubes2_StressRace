@@ -17,6 +17,7 @@ type SearchData struct {
 	URLStart  string `json:"urlStart"`
 	URLTarget string `json:"urlTarget"`
 	Algorithm string `json:"algorithm"`
+	Path string `json:"path"`
 }
 
 // result
