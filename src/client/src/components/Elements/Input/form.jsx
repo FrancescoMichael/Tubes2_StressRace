@@ -3,8 +3,9 @@ import React , { useState }from 'react';
 import Input from './input'; 
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Algo from './algo';
+import { WindowSharp } from '@mui/icons-material';
 
-function InputForm() {
+function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
     const [notification, setNotification] = useState("")
     const [algorithm, setAlgorithm] = useState(1)
 
@@ -19,8 +20,6 @@ function InputForm() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        // const startingPage = formData.get('starting-page');
-        // const targetPage = formData.get('target-page');
     };
 
     const handleSwap = () => {
@@ -41,6 +40,7 @@ function InputForm() {
                 setNotification("");
             }, 2000);
         } else {
+            setIsLoading(true);
             setNotification("");
             // console.log(`Start URL : ${urlStart}\nEnd URL : ${urlTarget}\nAlgoritma : ${algorithm}`)
             const algorithmString = algorithm.toString();
@@ -70,6 +70,7 @@ function InputForm() {
             .catch(error => {
                 console.error('There was a problem with your fetch operation:', error);
             });
+            setStartTime(performance.now());
         }
     }
 
