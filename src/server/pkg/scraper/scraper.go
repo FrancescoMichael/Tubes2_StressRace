@@ -21,9 +21,9 @@ var LinkCache = make(map[string][]string)
 var mutexCache = sync.Mutex{}
 
 func WebScraping(url string, resultData *[]string) error {
-	if !strings.Contains(url, "wikipedia.org") {
-		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
-	}
+	// if !strings.Contains(url, "wikipedia.org") {
+	// 	return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
+	// }
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Get(url)
@@ -43,7 +43,7 @@ func WebScraping(url string, resultData *[]string) error {
 
 	doc.Find("#bodyContent a").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
-		if exists && strings.HasPrefix(href, "/wiki/") {
+		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") {
 			*resultData = append(*resultData, "https://en.wikipedia.org"+href)
 		}
 	})

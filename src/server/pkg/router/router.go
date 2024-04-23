@@ -41,9 +41,6 @@ func GetSearch(c *gin.Context) {
 
 func GetResult(c *gin.Context) {
 	defer scraper.WriteJSON("links.json")
-	// searchData.URLStart = "https://en.wikipedia.org/wiki/Adolf_Hitler"
-	// searchData.URLTarget = "https://en.wikipedia.org/wiki/Nazi_Germany"
-	// searchData.Algorithm = "1"
 	fmt.Println(searchData.URLStart)
 	var hasil []string
 	var err error
@@ -61,38 +58,6 @@ func GetResult(c *gin.Context) {
 		return
 	}
 	data := make([]Result, 1) // ini masih satu path saja
-	// data := []Result{
-	// 	{
-	// 		ID: "1",
-	// 		Title: []string{
-	// 			"Hampi",
-	// 			"Hampi (town)",
-	// 			"Hampi Express",
-	// 			"Michael Jordan",
-	// 		},
-	// 		URL: []string{
-	// 			"https://en.wikipedia.org/wiki/Hampi",
-	// 			"https://en.wikipedia.org/wiki/Hampi_(town)",
-	// 			"https://en.wikipedia.org/wiki/Hampi_Express",
-	// 			"https://en.wikipedia.org/wiki/Michael_Jordan",
-	// 		},
-	// 	},
-	// 	{
-	// 		ID: "2",
-	// 		Title: []string{
-	// 			"Michael",
-	// 			"Michael Jackson",
-	// 			"Michael Jordan",
-	// 			"Michael Jordan",
-	// 		},
-	// 		URL: []string{
-	// 			"https://en.wikipedia.org/wiki/Michael",
-	// 			"https://en.wikipedia.org/wiki/Michael_Jackson",
-	// 			"https://en.wikipedia.org/wiki/Michael_Jordan",
-	// 			"https://en.wikipedia.org/wiki/Michael_Jordan",
-	// 		},
-	// 	},
-	// }
 
 	fmt.Println("Ini hasil : ", hasil)
 
@@ -106,10 +71,6 @@ func GetResult(c *gin.Context) {
 
 	fmt.Println("halo")
 }
-
-// func GetProperties(c *gin.Context) {
-// 	c.IndentedJSON(http.StatusCreated, main.properties())
-// }
 
 func OtherFunction() {
 	fmt.Println("Search Start in OtherFunction:", searchData.URLStart)
