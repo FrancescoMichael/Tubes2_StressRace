@@ -73,7 +73,7 @@ func IdsFirst(startPage string, endPage string, maxDepth int) ([]string, error) 
 		visited := make(map[string]bool)
 		path := []string{}
 		if found, result := DlsFirst(startPage, endPage, depth, visited, path); found {
-			fmt.Println(len(visited))
+			// fmt.Println(len(visited))
 			return result, nil
 		}
 
@@ -108,49 +108,6 @@ func DlsFirst(currUrl string, endPage string, depth int, visited map[string]bool
 	visited[currUrl] = false // Unmark the current node
 	return false, nil
 }
-
-// func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string, error) {
-// 	startPage = strings.TrimSpace(startPage)
-// 	endPage = strings.TrimSpace(endPage)
-
-// 	if !scraper.IsWikiPageUrlExists(&startPage) {
-// 		return nil, fmt.Errorf("start page doesn't exists")
-// 	}
-// 	if !scraper.IsWikiPageUrlExists(&endPage) {
-// 		return nil, fmt.Errorf("end page doesn't exists")
-// 	}
-// 	var found int32 = 0
-// 	pathsChannel := make(chan []string, 10) // assume max path is 10
-// 	for depth := 0; depth < maxDepth; depth++ {
-// 		var wg sync.WaitGroup
-// 		visited := make(map[string]bool)
-// 		path := []string{}
-// 		limiter := make(chan struct{}, 5)
-// 		wg.Add(1)
-// 		limiter <- struct{}{}
-// 		go DlsFirstGoRoutine(startPage, endPage, depth, visited, path, &found, &wg, pathsChannel, limiter)
-// 		fmt.Println("Bawah dls go routine")
-// 		wg.Wait()
-// 		// fmt.Println("luar wait")
-// 		// if found, result := DlsFirstGoRoutine(startPage, endPage, depth, visited, path, &found); found {
-// 		// 	fmt.Println(len(visited))
-// 		// 	return result, nil
-// 		// }
-// 		// finalPath, ok := <-pathsChannel
-// 		// if ok {
-// 		// 	return finalPath, nil
-// 		// }
-
-// 		if atomic.LoadInt32(&found) == 1 {
-// 			finalPath := <-pathsChannel
-// 			close(pathsChannel)
-// 			return finalPath, nil
-// 		}
-// 		fmt.Println("luar final")
-
-// 	}
-// 	return nil, nil
-// }
 
 func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string, error) {
 	startPage = strings.TrimSpace(startPage)
@@ -199,10 +156,6 @@ func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string
 				}
 			}
 		}()
-
-		// wg.Wait() // Wait for all goroutines at this depth to complete
-		fmt.Println(depth)
-
 		if atomic.LoadInt32(&found) == 1 {
 			close(pathsChannel) // Ensure no more writes to the channel
 			if path, ok := <-pathsChannel; ok {
@@ -216,20 +169,13 @@ func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string
 
 func DlsFirstGoRoutine(currUrl string, endPage string, depth int, visited map[string]bool, path []string, found *int32, wg *sync.WaitGroup, pathsChannel chan []string, limiter chan struct{}, visitedMutex *sync.Mutex) {
 	defer wg.Done()
-	limiter <- struct{}{}
-	// select {
-	// case limiter <- struct{}{}:
-	// 	// Successfully took a slot in limiter, proceed.
-	// case <-time.After(100 * time.Millisecond): // Or some other sensible timeout
-	// 	// Failed to take a slot in time, exit to avoid deadlock or slow processing.
-	// 	return
-	// }
 	defer func() { <-limiter }() // Release the limiter slot when done
+	limiter <- struct{}{}
 	// fmt.Println(currUrl)
 	if currUrl == endPage {
 		// fmt.Println("HERE")
 		if atomic.LoadInt32(found) == 0 {
-			fmt.Println("DOWN HERE")
+			// fmt.Println("DOWN HERE")
 			atomic.StoreInt32(found, 1)
 			path = append(path, currUrl)
 			pathsChannel <- append([]string(nil), path...)
@@ -262,12 +208,7 @@ func DlsFirstGoRoutine(currUrl string, endPage string, depth int, visited map[st
 		}
 		visitedMutex.Lock()
 		if !visited[value] {
-			// fmt.Println("Atas masukin limiter")
-			// limiter <- struct{}{}
-			// fmt.Println("Bawah masukin limiter")
-			// if found, result := DlsFirstGoRoutine(value, endPage, depth-1, visited, path, found); found {
-			// 	return true, result
-			// }
+
 			wg.Add(1)
 			go DlsFirstGoRoutine(value, endPage, depth-1, visited, path, found, wg, pathsChannel, limiter, visitedMutex)
 		}
@@ -321,20 +262,13 @@ func IdsFirstGoRoutineAllPaths(startPage string, endPage string, maxDepth int) (
 
 func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visited map[string]bool, path []string, found *int32, wg *sync.WaitGroup, pathsChannel chan []string, limiter chan struct{}, visitedMutex *sync.Mutex, allPaths *[][]string, allPathMutex *sync.Mutex) {
 	defer wg.Done()
-	limiter <- struct{}{}
-	// select {
-	// case limiter <- struct{}{}:
-	// 	// Successfully took a slot in limiter, proceed.
-	// case <-time.After(100 * time.Millisecond): // Or some other sensible timeout
-	// 	// Failed to take a slot in time, exit to avoid deadlock or slow processing.
-	// 	return
-	// }
 	defer func() { <-limiter }() // Release the limiter slot when done
-	// fmt.Println(currUrl)
+	limiter <- struct{}{}
+
 	if currUrl == endPage {
 		// fmt.Println("HERE")
 		if atomic.LoadInt32(found) == 0 {
-			fmt.Println("DOWN HERE")
+			// fmt.Println("DOWN HERE")
 			atomic.StoreInt32(found, 1)
 		}
 		path = append(path, currUrl)
@@ -343,7 +277,7 @@ func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visite
 		allPathMutex.Lock()
 		*allPaths = append(*allPaths, newPath)
 		allPathMutex.Unlock()
-		fmt.Println(*allPaths)
+		// fmt.Println(*allPaths)
 		return
 	}
 	// fmt.Println("Atas load ints")
@@ -367,12 +301,7 @@ func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visite
 		// limiter <- struct{}{}
 		visitedMutex.Lock()
 		if !visited[value] {
-			// fmt.Println("Atas masukin limiter")
-			// limiter <- struct{}{}
-			// fmt.Println("Bawah masukin limiter")
-			// if found, result := DlsFirstGoRoutine(value, endPage, depth-1, visited, path, found); found {
-			// 	return true, result
-			// }
+
 			wg.Add(1)
 			go DlsFirstGoRoutineAllPaths(value, endPage, depth-1, visited, path, found, wg, pathsChannel, limiter, visitedMutex, allPaths, allPathMutex)
 		}
@@ -383,91 +312,3 @@ func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visite
 	visitedMutex.Unlock()
 	// return
 }
-
-// var mutex sync.Mutex
-// var foundGlobal bool // global indicator if path is found
-
-// func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string, error) {
-// 	startPage = strings.TrimSpace(startPage)
-// 	endPage = strings.TrimSpace(endPage)
-
-// 	if !scraper.IsWikiPageUrlExists(&startPage) {
-// 		return nil, fmt.Errorf("start page doesn't exists")
-// 	}
-// 	if !scraper.IsWikiPageUrlExists(&endPage) {
-// 		return nil, fmt.Errorf("end page doesn't exists")
-// 	}
-
-// 	var result []string
-// 	var wg sync.WaitGroup
-
-// 	for depth := 0; depth < maxDepth && !foundGlobal; depth++ {
-// 		visited := make(map[string]bool)
-// 		path := []string{}
-// 		wg.Add(1)
-
-// 		go func(d int) {
-// 			defer wg.Done()
-// 			if found, res := DfsFirstGoRoutine(startPage, endPage, d, visited, path); found {
-// 				mutex.Lock()
-// 				if !foundGlobal { // Ensure no other goroutine has set the path
-// 					result = res
-// 					foundGlobal = true
-// 				}
-// 				mutex.Unlock()
-// 			}
-// 		}(depth)
-// 		wg.Wait() // Wait for the goroutines of this depth level
-// 		if foundGlobal {
-// 			break
-// 		}
-// 	}
-
-// 	return result, nil
-// }
-
-// func DfsFirstGoRoutine(currUrl string, endPage string, depth int, visited map[string]bool, path []string) (bool, []string) {
-// 	if foundGlobal {
-// 		return false, nil // Stop processing if the path is already found
-// 	}
-
-// 	if currUrl == endPage {
-// 		return true, append(path, currUrl)
-// 	}
-// 	if depth <= 0 {
-// 		return false, nil
-// 	}
-
-// 	mutex.Lock() // Lock before accessing global resources
-// 	if visited[currUrl] {
-// 		mutex.Unlock()
-// 		return false, nil
-// 	}
-// 	visited[currUrl] = true
-// 	mutex.Unlock()
-
-// 	path = append(path, currUrl)
-// 	var result []string
-// 	var found bool
-
-// 	allUrl := scraper.GetScrapeLinks(currUrl)
-// 	if allUrl == nil {
-// 		return false, nil
-// 	}
-
-// 	for _, value := range allUrl {
-// 		if !visited[value] {
-// 			if f, res := DfsFirst(value, endPage, depth-1, visited, path); f {
-// 				result = res
-// 				found = f
-// 				break
-// 			}
-// 		}
-// 	}
-
-// 	mutex.Lock()
-// 	visited[currUrl] = false // Unmark the current node after finishing
-// 	mutex.Unlock()
-
-// 	return found, result
-// }

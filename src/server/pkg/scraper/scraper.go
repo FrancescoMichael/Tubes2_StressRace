@@ -36,6 +36,7 @@ func WebScraping(url string, resultData *[]string) error {
 		return fmt.Errorf("received non-200 status code: %d", resp.StatusCode)
 	}
 
+	hasSeen := make(map[string]bool)
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		return err
@@ -43,8 +44,9 @@ func WebScraping(url string, resultData *[]string) error {
 
 	doc.Find("#bodyContent a").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
-		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") {
+		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] {
 			*resultData = append(*resultData, "https://en.wikipedia.org"+href)
+			hasSeen[href] = true
 		}
 	})
 
@@ -55,6 +57,7 @@ func GetScrapeLinksConcurrent(link string) []string {
 	mutexCache.Lock()
 	links, exist := LinkCache[link]
 	mutexCache.Unlock()
+
 
 	if !exist {
 		links = []string{}

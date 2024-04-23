@@ -1,109 +1,28 @@
-// package main
-
-// import (
-// 	routers "server/pkg/router"
-
-// 	"github.com/gin-contrib/cors"
-// 	"github.com/gin-gonic/gin"
-// )
-
-// func main() {
-// 	router := gin.Default()
-
-// 	// CORS middleware
-// 	router.Use(cors.New(cors.Config{
-// 		AllowOrigins:     []string{"http://localhost:3000"},
-// 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-// 		AllowHeaders:     []string{"Origin", "Content-Type"},
-// 		AllowCredentials: true,
-// 	}))
-
-// 	// Routes
-// 	router.POST("/api/search", routers.GetSearch)
-// 	router.GET("/api/result", routers.GetResult)
-
-// 	// Run the server
-// 	router.Run("localhost:8080")
-// }
-
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"server/pkg/algorithm"
-	"server/pkg/scraper"
-	"time"
+	routers "server/pkg/router"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// defer scraper.WriteJSON("links.json") // disable cache for real world testing
-	scraper.LoadCache()
+	router := gin.Default()
 
-	for i := 0; i <= 1; i++ {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Start Page Title : ")
-		urlStart, err := reader.ReadString('\n')
-		if err != nil {
-			return
-		}
-		urlStart = scraper.TitleToWikiUrl(urlStart)
-		fmt.Print("End Page Title : ")
-		urlEnd, err := reader.ReadString('\n')
-		if err != nil {
-			return
-		}
-		urlEnd = scraper.TitleToWikiUrl(urlEnd)
-		fmt.Println(urlStart)
-		fmt.Println(urlEnd)
-		fmt.Print("Algorithm : \n")
-		fmt.Print("1.BFS \n")
-		fmt.Print("2.IDS \n")
-		fmt.Print("3.BFS Go Routine \n")
-		fmt.Print("4.IDS Go Routine \n")
-		fmt.Print("Input : ")
-		var algo_input int
-		_, err = fmt.Scan(&algo_input)
-		if err != nil {
-			return
-		}
-		var hasil []string
-		var allPath [][]string
-		start := time.Now()
-		if algo_input == 1 {
-			// hasil, err = algorithm.Bfs(urlStart, urlEnd)
-			allPath, err = algorithm.BfsMultPath(urlStart, urlEnd)
-		} else if algo_input == 2 {
-			hasil, err = algorithm.IdsFirst(urlStart, urlEnd, 10)
+	// CORS middleware
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type"},
+		AllowCredentials: true,
+	}))
 
-		} else if algo_input == 3 {
-			hasil, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
-		} else if algo_input == 4 {
-			allPath, err = algorithm.IdsFirstGoRoutineAllPaths(urlStart, urlEnd, 10)
-		} else {
-			return
-		}
-		end := time.Now()
+	// Routes
+	router.POST("/api/search", routers.GetSearch)
+	router.GET("/api/result", routers.GetResult)
 
-		if err != nil {
-			fmt.Println(err)
-
-		} else if algo_input == 4 || algo_input == 1 {
-			fmt.Println("Time : ", end.Sub(start))
-			fmt.Printf("Depth : %d\n", len(hasil))
-			fmt.Println(allPath)
-		} else if hasil == nil {
-			fmt.Println("No possible path")
-		} else {
-			fmt.Println("Time : ", end.Sub(start))
-			fmt.Printf("Depth : %d\n", len(hasil))
-			fmt.Println(hasil)
-			fmt.Println(scraper.PathToTitle(hasil))
-		}
-
-		scraper.LinkCache = make(map[string][]string)
-
-	}
-
+	// Run the server
+	router.Run("localhost:8080")
+	// test.Test()
 }
