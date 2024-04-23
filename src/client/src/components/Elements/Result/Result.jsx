@@ -2,26 +2,12 @@ import React, { useState, useEffect } from "react";
 import ResultList from "./ResultList";
 import Pagination from "./Pagination";
 import axios from "axios";
-// import { getData } from "./DataResult.service"; 
 
 export default function Result() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage] = useState(6);
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   getData((responseData) => {
-  //     setData(responseData);
-  //     setIsLoading(false);
-  //   });
-  //   console.log(data);
-  // }, []);
-  
-  // useEffect(() => {
-  //   console.log("Ini data : ", data);
-  // }, [data]);
 
   useEffect(() => {
     const getData = async() => {
@@ -67,63 +53,3 @@ export default function Result() {
     </>
   );
 }
-
-
-// import React, { useState, useEffect } from "react";
-// import ResultList from "./ResultList";
-// import Pagination from "./Pagination";
-// import { getData } from "./DataResult.service"; // Import function to fetch data from API
-
-// export default function Result() {
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [data, setData] = useState(null);
-//   const [previousData, setPreviousData] = useState(null);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [postPerPage] = useState(6);
-
-//   useEffect(() => {
-//     setIsLoading(true);
-//     getData((responseData) => {
-//         setIsLoading(false);
-//         // Check if the fetched data is different from the previous data
-//         if (!isDataEqual(responseData, previousData)) {
-//           setData(responseData);
-//           setPreviousData(responseData);
-//         }
-//       })
-//   }, []);
-
-
-//   useEffect(() => {
-//     console.log("Ini data : ", data);
-//   }, [data]);
-
-//   const isDataEqual = (data1, data2) => {
-//     // Implement your logic to compare data equality here
-//     // For simplicity, you can stringify both objects and compare them
-//     return JSON.stringify(data1) === JSON.stringify(data2);
-//   };
-
-//   const lastPostIndex = currentPage * postPerPage;
-//   const firstPostIndex = lastPostIndex - postPerPage;
-//   const currentPost = data ? data.slice(firstPostIndex, lastPostIndex) : [];
-
-//   return (
-//     <div>
-//       {isLoading && <div>Loading...</div>}
-//       {!isLoading && data && data.length > 0 ? (
-//         <>
-//           <ResultList dataResults={currentPost} />
-//           <Pagination
-//             totalPosts={data.length}
-//             postPerPage={postPerPage}
-//             setCurrentPage={setCurrentPage}
-//             currentPage={currentPage}
-//           />
-//         </>
-//       ) : (
-//         <div>No data available.</div>
-//       )}
-//     </div>
-//   );
-// };
