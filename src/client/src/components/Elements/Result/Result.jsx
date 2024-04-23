@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import ResultList from "./ResultList";
 import Pagination from "./Pagination";
 import axios from "axios";
+import GraphView from "../../graph";
+
+// import "./styles.css";
+// import "./network.css";
+
 
 const properties = [
   {
@@ -25,6 +30,7 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
         try {
           const result = await axios("http://localhost:8080/api/result");
           setData(result.data);
+          console.log(result.data);
           setEndTime(performance.now());
           setIsLoading(false);
         } catch (error) {
@@ -33,7 +39,6 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
         }
       }
     };
-
     fetchData();
   }, [isLoading]);
 
@@ -78,6 +83,10 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
             <p className="mb-4">We found {properties[0].path} path(s)</p>
             <p className="mb-4">It takes {duration <= 0 ? 0 : duration} miliseconds</p>
           </div>
+
+          {/* Graph starts here */}
+          <GraphView dataResult={data}/>
+
           <ResultList dataResults={currentPost} />
           <Pagination
             totalPosts={data.length}

@@ -4,12 +4,10 @@ export default function Pagination({ totalPosts, postPerPage, setCurrentPage, cu
     let pages = [];
     const totalPages = Math.ceil(totalPosts / postPerPage);
   
-    // Batasi jumlah halaman yang ditampilkan sekitar halaman aktif
     const maxPagesToShow = 5;
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
   
-    // Tambahkan logika untuk menampilkan tombol elipsis dan halaman pertama/terakhir
     if (startPage > 1) {
       pages.push(1);
       if (startPage > 2) {

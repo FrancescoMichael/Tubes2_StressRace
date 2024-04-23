@@ -17,8 +17,9 @@ function Input(props){
         setIsVisible(inputValue !== "");
     }
 
-    // console.log(searchData)
-
+    function titleToURL(title) {
+        return "https://en.wikipedia.org/wiki/" + title;
+    }
 
     const handleKeyDown = e => {
         if(selectedItem < searchData.length) {
@@ -26,8 +27,7 @@ function Input(props){
                 setSelectedItem(prev => prev - 1)
             } else if (e.key === "ArrowDown" && selectedItem < searchData.length - 1) {
                 setSelectedItem(prev => prev + 1)
-            }
-            else if (e.key === "Enter" && selectedItem >= 0) {
+            } else if (e.key === "Enter" && selectedItem >= 0) {
                 setSearch(options[selectedItem].label);
                 setSearchData([])
                 setURL(options[selectedItem].value);
@@ -35,6 +35,10 @@ function Input(props){
                 setSelectedItem(-1)
                 setIsVisible(false);
                 setInputSearch(options[selectedItem].label);
+            } else if(e.key === "Enter" && selectedItem == -1) {
+                setSearch(e.target.value)
+                setIsVisible(false);
+                setURLSearch(titleToURL(search))
             }
         } else {
             setSelectedItem(-1)
@@ -47,7 +51,6 @@ function Input(props){
                 .then(res => res.json())
                 .then(data => setSearchData(data));
         }
-
    }, [search]); 
 
     const [searchTerm, titles, emptyArray, urls] = searchData;
@@ -77,12 +80,6 @@ function Input(props){
                 value={value}
                 onKeyDown={handleKeyDown}
             />
-            {/* {search && (
-                    <CloseIcon 
-                        style={{ color: 'white', fontSize: '20px', cursor: 'pointer' }} 
-                      
-                    />
-                )} */}
             <div className="search_result mt-100 bg-white absolute top-full z-10 rounded-xl" style={{width: '90%'}}>
                 {
                 isVisible && search !== "" &&(options.map((data, index) => {
@@ -102,7 +99,6 @@ function Input(props){
                 }))
                 }
             </div>
-
         </div>
 
     );
