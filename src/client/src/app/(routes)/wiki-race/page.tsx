@@ -45,19 +45,19 @@ export default function Home() {
           2 
         </p>
         <p className="text-xl mt-4">
-          Masukkan judul laman awal pencarian pada box seperti dibawah ini
+          Tentukan jumlah path yang anda ingin hasilkan pada box seperti dibawah ini
         </p>
       </div>
       <div>
-        <img src="images/2.png" className="w-96 mt-8" alt=""/>
+        <img src="images/2.png" className="w-60 mt-8" alt=""/>
       </div>
 
       <div className="text-white text-lg text-center mt-4 max-w-xl">
-        <p className="text-xl">
+      <p className="text-xl">
           3 
         </p>
         <p className="text-xl mt-4">
-          Masukkan judul laman akhir pencarian pada box seperti dibawah ini
+          Masukkan judul laman awal pencarian pada box seperti dibawah ini
         </p>
       </div>
       <div>
@@ -65,28 +65,40 @@ export default function Home() {
       </div>
 
       <div className="text-white text-lg text-center mt-4 max-w-xl">
-      <p className="text-xl">
+        <p className="text-xl">
           4 
+        </p>
+        <p className="text-xl mt-4">
+          Masukkan judul laman akhir pencarian pada box seperti dibawah ini
+        </p>
+      </div>
+      <div>
+        <img src="images/4.png" className="w-96 mt-8" alt=""/>
+      </div>
+
+      <div className="text-white text-lg text-center mt-4 max-w-xl">
+      <p className="text-xl">
+          5 
         </p>
         <p className="text-xl mt-4">
           Anda dapat menukar judul laman awal dengan judul laman akhir dengan tombol dibawah
         </p>
       </div>
       <div>
-        <img src="images/4.png" className="mt-8" alt=""/>
+        <img src="images/5.png" className="mt-8" alt=""/>
       </div>
 
       
       <div className="text-white text-lg text-center mt-4 max-w-xl">
         <p className="text-xl">
-          5 
+          6 
         </p>
         <p className="text-xl mt-4">
           Mulai pencarian dengan menekan tombol Search! seperti dibawah
         </p>
       </div>
       <div>
-        <img src="images/5.png" className="mt-8" alt=""/>
+        <img src="images/6.png" className="mt-8" alt=""/>
       </div>
             
     </main>
