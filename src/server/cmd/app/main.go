@@ -1,7 +1,7 @@
 package main
 
 import (
-	routers "server/pkg/router"
+	"server/pkg/routers"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
