@@ -3,6 +3,15 @@ import ResultList from "./ResultList";
 import Pagination from "./Pagination";
 import axios from "axios";
 
+const properties = [
+  {
+    "id" : "1",
+    "degrees" : "3",
+    "articles" : "375",
+    "path" : "2",
+  }
+]
+
 export default function Result({ isLoading, setIsLoading, startTime }) {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +38,7 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
   }, [isLoading]);
 
   useEffect(() => {
-    setDuration((endTime - startTime) / 1000);
+    setDuration((endTime - startTime).toFixed(2));
   }, [endTime, startTime]);
 
   const lastPostIndex = currentPage * postPerPage;
@@ -61,12 +70,13 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
           </div>
         ) : null}
       </div>
-      {data.length > 0 ? (
+      {data.length > 0 && !isLoading ? (
         <>
           <div className="flex flex-col items-center justify-center text-center text-white text-2xl mt-8">
-            <p className="mb-4">With the minimum of ... degrees</p>
-            <p className="mb-4">We found ... path(s)</p>
-            <p className="mb-4">It takes {duration <= 0 ? 0 : duration} second(s)</p>
+            <p className="mb-4">With the minimum of {properties[0].degrees} degrees</p>
+            <p className="mb-4">In {properties[0].articles} articles</p>
+            <p className="mb-4">We found {properties[0].path} path(s)</p>
+            <p className="mb-4">It takes {duration <= 0 ? 0 : duration} miliseconds</p>
           </div>
           <ResultList dataResults={currentPost} />
           <Pagination
