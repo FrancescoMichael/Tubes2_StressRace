@@ -3,11 +3,12 @@ import React , { useState }from 'react';
 import Input from './input'; 
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import Algo from './algo';
-import { WindowSharp } from '@mui/icons-material';
+import Path from './Path';
 
 function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
     const [notification, setNotification] = useState("")
     const [algorithm, setAlgorithm] = useState(1)
+    const [path, setPath] = useState(1);
 
     const [searchStart, setSearchStart] = useState("")
     const [urlStart, setURLStart] = useState("")
@@ -42,8 +43,10 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
         } else {
             setIsLoading(true);
             setNotification("");
+            console.log("Ini path : ", path);
             // console.log(`Start URL : ${urlStart}\nEnd URL : ${urlTarget}\nAlgoritma : ${algorithm}`)
             const algorithmString = algorithm.toString();
+            const pathString = path.toString();
             
             // Kirim data ke backend
             await fetch('http://localhost:8080/api/search', {
@@ -55,6 +58,7 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
                     urlStart,
                     urlTarget,
                     algorithm: algorithmString,
+                    path: pathString,
                 }),
                 credentials: 'include',
             })
@@ -77,6 +81,7 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
     return (
         <>
             <Algo setAlgorithmChoice = {setAlgorithm}/>
+            <Path setPathChoice = {setPath} />
             <form onSubmit={handleSubmit} id="form">
                 <div className="flex container-search">
                     <div className="box">
