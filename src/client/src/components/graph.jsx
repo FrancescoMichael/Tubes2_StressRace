@@ -8,6 +8,26 @@ const options = {
   },
   edges: {
     color: "#FFFFFF"
+  },
+  nodes: {
+    shape: 'dot',
+    scaling: {
+      min: 10,
+      max: 30,
+      label: {
+        min: 8,
+        max: 30,
+        drawThreshold: 12,
+        maxVisible: 20
+      }
+    },
+    color: {
+      background: '#6D6D6D',
+    },
+    font: {
+      color: '#FFFFFF',
+      size: 12
+    }
   }
 };
   
@@ -23,6 +43,7 @@ export default function GraphView({ dataResult }) {
   const edges = [];
   
   // Populate nodes and edges from dataResult
+
   dataResult.forEach(step => {
     step.title.forEach((title, index) => {
       // Add node if it doesn't exist already
