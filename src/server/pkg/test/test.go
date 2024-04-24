@@ -11,7 +11,7 @@ import (
 
 func Test() {
 	// defer scraper.WriteJSON("links.json")
-	scraper.LoadCache()
+	// scraper.LoadCache()
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Start Page Title : ")
 	urlStart, err := reader.ReadString('\n')
