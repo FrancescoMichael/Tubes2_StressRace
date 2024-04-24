@@ -13,7 +13,7 @@ const options = {
     shape: 'dot',
     scaling: {
       min: 10,
-      max: 30,
+      max: 10,
       label: {
         min: 8,
         max: 30,
