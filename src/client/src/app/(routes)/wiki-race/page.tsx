@@ -1,9 +1,14 @@
-import Image from "next/image";
-import React, { useState } from "react";
-import {roboto} from "@/app/ui/font"
-import img1 from '../../../../public/images/1.png';
+"use client"
+import { duration } from "@mui/material";
+import Aos from "aos";
+import React, { useEffect } from "react";
+import "aos/dist/aos.css"
 
 export default function Home() {
+  useEffect(() => {
+      Aos.init({duration: 1000});
+  }, []);
+  
   return (
     <main className="flex min-h-screen flex-col items-center p-24 flex-wrap">
       <div className="flex flex-row flex-wrap justify-center gap-4 items-center h-full animate-fadeIn">
@@ -28,7 +33,7 @@ export default function Home() {
         </span>
       </div>
 
-      <div className="text-white text-lg text-center mt-4 max-w-xl">
+      <div data-aos="fade-up" className="text-white text-lg text-center mt-4 max-w-xl">
         <p className="text-xl">
           1 
         </p>
@@ -36,11 +41,11 @@ export default function Home() {
           Pilih terlebih dahulu jenis algoritma yang anda ingin gunakan
         </p>
       </div>
-      <div>
+      <div data-aos="fade-up">
         <img src="images/1.png" className="w-48 mt-8" alt=""/>
       </div>
 
-      <div className="text-white text-lg text-center mt-4 max-w-xl">
+      <div data-aos="fade-up" className="text-white text-lg text-center mt-4 max-w-xl">
       <p className="text-xl">
           2 
         </p>
@@ -48,11 +53,11 @@ export default function Home() {
           Tentukan jumlah path yang anda ingin hasilkan pada box seperti dibawah ini
         </p>
       </div>
-      <div>
+      <div data-aos="fade-up">
         <img src="images/2.png" className="w-60 mt-8" alt=""/>
       </div>
 
-      <div className="text-white text-lg text-center mt-4 max-w-xl">
+      <div data-aos="fade-up" className="text-white text-lg text-center mt-4 max-w-xl">
       <p className="text-xl">
           3 
         </p>
@@ -60,11 +65,11 @@ export default function Home() {
           Masukkan judul laman awal pencarian pada box seperti dibawah ini
         </p>
       </div>
-      <div>
+      <div data-aos="fade-up">
         <img src="images/3.png" className="w-96 mt-8" alt=""/>
       </div>
 
-      <div className="text-white text-lg text-center mt-4 max-w-xl">
+      <div data-aos="fade-up" className="text-white text-lg text-center mt-4 max-w-xl">
         <p className="text-xl">
           4 
         </p>
@@ -72,11 +77,11 @@ export default function Home() {
           Masukkan judul laman akhir pencarian pada box seperti dibawah ini
         </p>
       </div>
-      <div>
+      <div data-aos="fade-up">
         <img src="images/4.png" className="w-96 mt-8" alt=""/>
       </div>
 
-      <div className="text-white text-lg text-center mt-4 max-w-xl">
+      <div data-aos="fade-up" className="text-white text-lg text-center mt-4 max-w-xl">
       <p className="text-xl">
           5 
         </p>
@@ -84,12 +89,12 @@ export default function Home() {
           Anda dapat menukar judul laman awal dengan judul laman akhir dengan tombol dibawah
         </p>
       </div>
-      <div>
+      <div data-aos="fade-up">
         <img src="images/5.png" className="mt-8" alt=""/>
       </div>
 
       
-      <div className="text-white text-lg text-center mt-4 max-w-xl">
+      <div data-aos="fade-up" className="text-white text-lg text-center mt-4 max-w-xl">
         <p className="text-xl">
           6 
         </p>
@@ -97,7 +102,7 @@ export default function Home() {
           Mulai pencarian dengan menekan tombol Search! seperti dibawah
         </p>
       </div>
-      <div>
+      <div data-aos="fade-up">
         <img src="images/6.png" className="mt-8" alt=""/>
       </div>
             

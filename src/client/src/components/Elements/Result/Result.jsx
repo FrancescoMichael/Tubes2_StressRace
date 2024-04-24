@@ -52,7 +52,7 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center text-center">
+      <div className="flex flex-col items-center justify-center text-center mt-8">
         {isLoading ? (
           <div role="status">
             <svg
