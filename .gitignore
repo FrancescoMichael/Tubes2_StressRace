@@ -3,3 +3,5 @@
 
 # Ignore all JSON files
 links.json
+
+*.DS_Store
