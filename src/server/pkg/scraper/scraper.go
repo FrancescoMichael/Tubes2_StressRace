@@ -21,9 +21,6 @@ var LinkCache = make(map[string][]string)
 var mutexCache = sync.Mutex{}
 
 func WebScraping(url string, resultData *[]string) error {
-	if !strings.Contains(url, "wikipedia.org") {
-		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
-	}
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Get(url)
@@ -36,6 +33,7 @@ func WebScraping(url string, resultData *[]string) error {
 		return fmt.Errorf("received non-200 status code: %d", resp.StatusCode)
 	}
 
+	hasSeen := make(map[string]bool)
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		return err
@@ -43,8 +41,9 @@ func WebScraping(url string, resultData *[]string) error {
 
 	doc.Find("#bodyContent a").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
-		if exists && strings.HasPrefix(href, "/wiki/") {
+		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] {
 			*resultData = append(*resultData, "https://en.wikipedia.org"+href)
+			hasSeen[href] = true
 		}
 	})
 
@@ -214,6 +213,7 @@ func IsWikiPageUrlExists(url *string) bool {
 		fmt.Printf("HTTP request failed: %v\n", err)
 		return false
 	}
+
 	defer response.Body.Close() // Ensure the response body is closed
 
 	// Update the URL to the final redirected URL if not already done

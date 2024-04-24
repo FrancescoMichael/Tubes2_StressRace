@@ -122,7 +122,6 @@ select{
     font-size: 25px;
 }
 
-
 @media screen and (max-width:1200px){
     .box{
         width: 400px;
@@ -278,3 +277,11 @@ select{
 }
 }
   
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

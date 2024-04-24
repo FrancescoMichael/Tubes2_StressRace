@@ -1,3 +1,4 @@
+import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 import React, { useState } from 'react';
 import Graph from 'react-vis-network-graph';
 
@@ -7,6 +8,26 @@ const options = {
   },
   edges: {
     color: "#FFFFFF"
+  },
+  nodes: {
+    shape: 'dot',
+    scaling: {
+      min: 10,
+      max: 10,
+      label: {
+        min: 8,
+        max: 30,
+        drawThreshold: 12,
+        maxVisible: 20
+      }
+    },
+    color: {
+      background: '#6D6D6D',
+    },
+    font: {
+      color: '#FFFFFF',
+      size: 12
+    }
   }
 };
 
@@ -15,6 +36,7 @@ export default function GraphView({ dataResult }) {
   const edges = [];
   
   // Populate nodes and edges from dataResult
+
   dataResult.forEach(step => {
       if (step.title !== null) {
           step.title.forEach((title, index) => {
@@ -59,8 +81,8 @@ export default function GraphView({ dataResult }) {
   const { graph, events } = state;
 
   return (
-    <div className="graph-container border border-8 rounded-xl" style={{ border: "2px solid white" }}>
-      <Graph graph={graph} options={options} events={events} style={{ height: "640px" }} />
+    <div className="graf graph-container border border-8 rounded-xl" style={{ border: "2px solid white" }}>
+      <Graph graph={graph} options={options} events={events} style={{ height: "480px"}} />
     </div>
   );
 }

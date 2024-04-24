@@ -1,12 +1,11 @@
 package main
 
 import (
-	routers "server/pkg/router"
+	"server/pkg/routers"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
 
 func main() {
 	router := gin.Default()
@@ -21,7 +20,7 @@ func main() {
 	// Routes
 	router.POST("/api/search", routers.GetSearch)
 	router.GET("/api/result", routers.GetResult)
-	// router.POST("api/properties", GetProperties)
+	router.GET("/api/properties", routers.GetProperties)
 
 	// Run the server
 	router.Run(":8080")

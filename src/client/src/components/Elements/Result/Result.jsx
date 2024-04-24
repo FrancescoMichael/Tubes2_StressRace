@@ -52,8 +52,8 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center text-center">
-        {isLoading && !data.some(item => item.title === null || item.url === null) ? (
+      <div className="flex flex-col items-center justify-center text-center mt-8">
+        {isLoading && !isLoading && !data.some(item => item.title === null || item.url === null)? (
           <div role="status">
             <svg
               aria-hidden="true"
