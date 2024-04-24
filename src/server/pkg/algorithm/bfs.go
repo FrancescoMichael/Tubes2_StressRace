@@ -10,7 +10,7 @@ import (
 
 type node struct {
 	url   string
-	depth int
+	depth int32
 }
 
 func appendNode(list []node, newNode node) []node {
@@ -148,7 +148,7 @@ func BfsMultPath(start string, end string) ([][]string, map[string]bool, error) 
 	visited[start] = true
 	parent := make(map[string][]string)
 	// parents := make(map[string][]string)
-	var maxDepth = 999
+	var maxDepth int32 = 999
 
 	for len(queue) > 0 {
 		curr := queue[0]
@@ -191,7 +191,7 @@ func BfsMultPath(start string, end string) ([][]string, map[string]bool, error) 
 	return makePathAll(parent, start, end), visited, nil // Return nil if end is not reachable
 }
 
-func BfsMultPathGoRoutine(start string, end string) ([][]string, map[string]bool, error) {
+func BfsAllPathGoRoutine(start string, end string) ([][]string, map[string]bool, error) {
 	start = strings.TrimSpace(start)
 	end = strings.TrimSpace(end)
 
@@ -201,93 +201,180 @@ func BfsMultPathGoRoutine(start string, end string) ([][]string, map[string]bool
 	if !scraper.IsWikiPageUrlExists(&end) {
 		return nil, nil, fmt.Errorf("end page does not exist")
 	}
+	limiter := make(chan struct{}, 100)
 	startNode := node{
 		url:   start,
 		depth: 0,
 	}
-	var queue []node
-	queue = appendNode(queue, startNode)
+	queue := []node{startNode}
+
 	visited := make(map[string]bool)
 	visited[start] = true
 	parent := make(map[string][]string)
-	// parents := make(map[string][]string)
-	var maxDepth = 10
-	limiter := make(chan struct{}, 100)
-	var mutex sync.Mutex
+	var found int32 = 0 // Use atomic int32 for the found flag
+	var mutex1 sync.Mutex
 	var wg sync.WaitGroup
+	var maxDepth int32 = 10
 
-	
-	for {
-		var curr node
-		mutex.Lock()
-		if len(queue) > 0 {
-			curr = queue[0]
-			queue = queue[1:]
-			// fmt.Println(len(queue))
-
-		}
-
-		mutex.Unlock()
-
-		if curr.depth > maxDepth {
-			fmt.Println("STUCK HERE")
-			break
-		}
-
-		if curr.url == end && curr.depth <= maxDepth {
-			mutex.Lock()
-			fmt.Println("ATAS")
-			maxDepth = curr.depth
-			mutex.Unlock()
-			continue
-		}
-		if curr.url == "https://en.wikipedia.org/wiki/Pancasila_(politics)" || curr.url == "https://en.wikipedia.org/wiki/Slovakia" {
-			fmt.Println(curr.url)
-		}
-		wg.Add(1)
+	for atomic.LoadInt32(&found) == 0 {
 		limiter <- struct{}{}
-		go func(curr node) {
-			defer wg.Done()
+		wg.Add(1)
+		go func() {
+
 			defer func() { <-limiter }()
-			allUrl := scraper.GetScrapeLinksConcurrent(curr.url)
+			defer wg.Done()
+			var curr node
+
+			mutex1.Lock()
+			if len(queue) > 0 {
+				curr = queue[0]
+				queue = queue[1:]
+			}
+			mutex1.Unlock()
+
+			if curr.url == end && curr.depth <= atomic.LoadInt32(&maxDepth) {
+				atomic.SwapInt32(&maxDepth, curr.depth)
+				return
+			}
+			if curr.depth >= atomic.LoadInt32(&maxDepth) {
+				atomic.StoreInt32(&found, 1)
+				return
+			}
+
+			var allUrl = scraper.GetScrapeLinksConcurrent(curr.url)
 			if allUrl == nil {
 				return
 			}
 
-			mutex.Lock()
+			mutex1.Lock()
 			for _, linkTemp := range allUrl {
-				if !visited[linkTemp] {
-					// if curr.url == "https://en.wikipedia.org/wiki/Pancasila_(politics)" || curr.url == "https://en.wikipedia.org/wiki/Slovakia" {
-					// 	// fmt.Println(curr.url)
-					// 	// fmt.Println(linkTemp)
 
-					// }
+				if !visited[linkTemp] {
 					visited[linkTemp] = true
 					parent[linkTemp] = append(parent[linkTemp], curr.url)
-					newNode := node{
-						url:   linkTemp,
-						depth: curr.depth + 1,
-					}
-					if linkTemp == end && curr.depth+1 <= maxDepth {
-
-						fmt.Println("BAWAH")
-						maxDepth = curr.depth + 1
-						return
-
+					if linkTemp == end && curr.depth <= atomic.LoadInt32(&maxDepth) {
+						atomic.SwapInt32(&maxDepth, curr.depth+1)
+						visited[linkTemp] = false
+						break
 					} else {
-						queue = appendNode(queue, newNode)
+						queue = append(queue, node{
+							url:   linkTemp,
+							depth: curr.depth + 1,
+						})
+
 					}
 
 				}
 			}
-			mutex.Unlock()
-		}(curr)
+			mutex1.Unlock()
+
+		}()
+	}
+	wg.Wait()
+
+	if atomic.LoadInt32(&found) == 0 {
+		return nil, visited, fmt.Errorf("path cannot be found") // Return nil if end is not reachable
 	}
 
-	wg.Wait() // Wait for all go routines to finish
-
-	return makePathAll(parent, start, end), visited, nil // Return nil if end is not reachable
+	return makePathAll(parent, start, end), visited, nil
 }
+
+// func BfsMultPathGoRoutine(start string, end string) ([][]string, map[string]bool, error) {
+// 	start = strings.TrimSpace(start)
+// 	end = strings.TrimSpace(end)
+
+// 	if !scraper.IsWikiPageUrlExists(&start) {
+// 		return nil, nil, fmt.Errorf("start page does not exist")
+// 	}
+// 	if !scraper.IsWikiPageUrlExists(&end) {
+// 		return nil, nil, fmt.Errorf("end page does not exist")
+// 	}
+// 	startNode := node{
+// 		url:   start,
+// 		depth: 0,
+// 	}
+// 	var queue []node
+// 	queue = appendNode(queue, startNode)
+// 	visited := make(map[string]bool)
+// 	visited[start] = true
+// 	parent := make(map[string][]string)
+// 	// parents := make(map[string][]string)
+// 	var maxDepth = 10
+// 	limiter := make(chan struct{}, 100)
+// 	var mutex sync.Mutex
+// 	var wg sync.WaitGroup
+
+// 	for {
+// 		var curr node
+// 		mutex.Lock()
+// 		if len(queue) > 0 {
+// 			curr = queue[0]
+// 			queue = queue[1:]
+// 			// fmt.Println(len(queue))
+
+// 		}
+
+// 		mutex.Unlock()
+
+// 		if curr.depth > maxDepth {
+// 			fmt.Println("STUCK HERE")
+// 			break
+// 		}
+
+// 		if curr.url == end && curr.depth <= maxDepth {
+// 			mutex.Lock()
+// 			fmt.Println("ATAS")
+// 			maxDepth = curr.depth
+// 			mutex.Unlock()
+// 			continue
+// 		}
+// 		if curr.url == "https://en.wikipedia.org/wiki/Pancasila_(politics)" || curr.url == "https://en.wikipedia.org/wiki/Slovakia" {
+// 			fmt.Println(curr.url)
+// 		}
+// 		wg.Add(1)
+// 		limiter <- struct{}{}
+// 		go func(curr node) {
+// 			defer wg.Done()
+// 			defer func() { <-limiter }()
+// 			allUrl := scraper.GetScrapeLinksConcurrent(curr.url)
+// 			if allUrl == nil {
+// 				return
+// 			}
+
+// 			mutex.Lock()
+// 			for _, linkTemp := range allUrl {
+// 				if !visited[linkTemp] {
+// 					// if curr.url == "https://en.wikipedia.org/wiki/Pancasila_(politics)" || curr.url == "https://en.wikipedia.org/wiki/Slovakia" {
+// 					// 	// fmt.Println(curr.url)
+// 					// 	// fmt.Println(linkTemp)
+
+// 					// }
+// 					visited[linkTemp] = true
+// 					parent[linkTemp] = append(parent[linkTemp], curr.url)
+// 					newNode := node{
+// 						url:   linkTemp,
+// 						depth: curr.depth + 1,
+// 					}
+// 					if linkTemp == end && curr.depth+1 <= maxDepth {
+
+// 						fmt.Println("BAWAH")
+// 						maxDepth = curr.depth + 1
+// 						return
+
+// 					} else {
+// 						queue = appendNode(queue, newNode)
+// 					}
+
+// 				}
+// 			}
+// 			mutex.Unlock()
+// 		}(curr)
+// 	}
+
+// 	wg.Wait() // Wait for all go routines to finish
+
+// 	return makePathAll(parent, start, end), visited, nil // Return nil if end is not reachable
+// }
 
 func makePath(parent map[string]string, start string, end string) []string {
 	path := []string{}
