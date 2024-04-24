@@ -11,10 +11,9 @@ import (
 func main() {
 	router := gin.Default()
 
-	// CORS middleware
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		AllowCredentials: true,
 	}))
@@ -25,5 +24,5 @@ func main() {
 	// router.POST("api/properties", GetProperties)
 
 	// Run the server
-	router.Run("localhost:8080")
+	router.Run(":8080")
 }

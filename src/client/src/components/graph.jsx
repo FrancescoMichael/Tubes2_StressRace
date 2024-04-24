@@ -9,13 +9,6 @@ const options = {
     color: "#FFFFFF"
   }
 };
-  
-function randomColor() {
-  const red = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-  const green = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-  const blue = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-  return `#${red}${green}${blue}`;
-}
 
 export default function GraphView({ dataResult }) {
   const nodes = [];
@@ -23,19 +16,21 @@ export default function GraphView({ dataResult }) {
   
   // Populate nodes and edges from dataResult
   dataResult.forEach(step => {
-    step.title.forEach((title, index) => {
-      // Add node if it doesn't exist already
-      if (!nodes.find(node => node.id === title)) {
-        nodes.push({ id: title, label: title, url: step.url[index] });
-      }
+      if (step.title !== null) {
+          step.title.forEach((title, index) => {
+              // Add node if it doesn't exist already
+              if (!nodes.find(node => node.id === title)) {
+                  nodes.push({ id: title, label: title, url: step.url ? step.url[index] : null });
+              }
 
-      // Add edge if not the first step
-      if (index > 0) {
-        edges.push({ from: step.title[index - 1], to: title });
+              // Add edge if not the first step
+              if (index > 0 && step.title[index - 1] !== null) {
+                  edges.push({ from: step.title[index - 1], to: title });
+              }
+          });
       }
-    });
   });
-  
+
   // Define event handler for node selection
   const handleNodeSelect = ({ nodes }) => {
     console.log("Selected nodes:", nodes);

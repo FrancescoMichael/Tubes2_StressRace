@@ -53,7 +53,7 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
   return (
     <>
       <div className="flex flex-col items-center justify-center text-center">
-        {isLoading ? (
+        {isLoading && !data.some(item => item.title === null || item.url === null) ? (
           <div role="status">
             <svg
               aria-hidden="true"
@@ -75,7 +75,7 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
           </div>
         ) : null}
       </div>
-      {data.length > 0 && !isLoading ? (
+      {data.length > 0 && !isLoading && !data.some(item => item.title === null || item.url === null) ? (
         <>
           <div className="flex flex-col items-center justify-center text-center text-white text-2xl mt-8">
             <p className="mb-4">With the minimum of {properties[0].degrees} degrees</p>
