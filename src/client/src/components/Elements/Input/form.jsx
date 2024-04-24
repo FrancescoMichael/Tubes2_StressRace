@@ -105,8 +105,8 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
                     {notification && (
                         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center text-red-500">
                             <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded relative text-lg" role="alert">
-                                <strong class="font-bold">Holy smokes!</strong>
-                                <span class="block sm:inline">{notification}</span>
+                                <strong className="font-bold">Holy smokes!</strong>
+                                <span className="block sm:inline">{notification}</span>
 
                             </div>
                         </div>
