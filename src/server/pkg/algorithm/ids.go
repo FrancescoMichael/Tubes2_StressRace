@@ -6,7 +6,6 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
-	"time"
 )
 
 func Ids(startPage string, endPage string, maxDepth int) ([][]string, int) {
@@ -56,17 +55,15 @@ func dfs(currUrl string, endPage string, currDepth int, visited map[string]bool,
 
 }
 
-// find path and then exit version
-
-func IdsFirst(startPage string, endPage string, maxDepth int) ([]string, error) {
+func IdsFirst(startPage string, endPage string, maxDepth int) ([]string, map[string]bool, error) {
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
 
 	if !scraper.IsWikiPageUrlExists(&startPage) {
-		return nil, fmt.Errorf("start page doesn't exists")
+		return nil, nil, fmt.Errorf("start page doesn't exists")
 	}
 	if !scraper.IsWikiPageUrlExists(&endPage) {
-		return nil, fmt.Errorf("end page doesn't exists")
+		return nil, nil, fmt.Errorf("end page doesn't exists")
 	}
 
 	for depth := 0; depth < maxDepth; depth++ {
@@ -74,11 +71,11 @@ func IdsFirst(startPage string, endPage string, maxDepth int) ([]string, error) 
 		path := []string{}
 		if found, result := DlsFirst(startPage, endPage, depth, visited, path); found {
 			// fmt.Println(len(visited))
-			return result, nil
+			return result, visited, nil
 		}
 
 	}
-	return nil, nil
+	return nil, nil, nil
 }
 
 func DlsFirst(currUrl string, endPage string, depth int, visited map[string]bool, path []string) (bool, []string) {
@@ -109,16 +106,16 @@ func DlsFirst(currUrl string, endPage string, depth int, visited map[string]bool
 	return false, nil
 }
 
-func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string, error) {
+func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string, map[string]bool, error) {
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
 
 	// Check if the start and end pages exist in your scrape function
 	if !scraper.IsWikiPageUrlExists(&startPage) {
-		return nil, fmt.Errorf("start page doesn't exist")
+		return nil, nil, fmt.Errorf("start page doesn't exist")
 	}
 	if !scraper.IsWikiPageUrlExists(&endPage) {
-		return nil, fmt.Errorf("end page doesn't exist")
+		return nil, nil, fmt.Errorf("end page doesn't exist")
 	}
 
 	var found int32 = 0
@@ -133,38 +130,16 @@ func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string
 
 		go DlsFirstGoRoutine(startPage, endPage, depth, visited, []string{}, &found, &wg, pathsChannel, limiter, &visitedMutex)
 
-		done := make(chan bool)
-		go func() {
-			wg.Wait()
-			done <- true
-		}()
-
-		go func() {
-			ticker := time.NewTicker(100 * time.Millisecond) // Check every 100ms
-			defer ticker.Stop()
-
-			for {
-				select {
-				case <-done:
-					// All goroutines have finished
-					return
-				case <-ticker.C:
-					if atomic.LoadInt32(&found) == 1 {
-						// Found is set, you can take additional actions if necessary
-						println("Target was found!")
-					}
-				}
-			}
-		}()
+		wg.Wait()
 		if atomic.LoadInt32(&found) == 1 {
 			close(pathsChannel) // Ensure no more writes to the channel
 			if path, ok := <-pathsChannel; ok {
-				return path, nil // Return the found path
+				return path, visited, nil // Return the found path
 			}
 		}
 	}
 
-	return nil, fmt.Errorf("no path found within depth %d", maxDepth)
+	return nil, nil, fmt.Errorf("no path found within depth %d", maxDepth)
 }
 
 func DlsFirstGoRoutine(currUrl string, endPage string, depth int, visited map[string]bool, path []string, found *int32, wg *sync.WaitGroup, pathsChannel chan []string, limiter chan struct{}, visitedMutex *sync.Mutex) {
@@ -220,22 +195,22 @@ func DlsFirstGoRoutine(currUrl string, endPage string, depth int, visited map[st
 	// return
 }
 
-func IdsFirstGoRoutineAllPaths(startPage string, endPage string, maxDepth int) ([][]string, error) {
+func IdsFirstGoRoutineAllPaths(startPage string, endPage string, maxDepth int) ([][]string, map[string]bool, error) {
 	startPage = strings.TrimSpace(startPage)
 	endPage = strings.TrimSpace(endPage)
 	var allPaths [][]string
 
 	// Check if the start and end pages exist in your scrape function
 	if !scraper.IsWikiPageUrlExists(&startPage) {
-		return nil, fmt.Errorf("start page doesn't exist")
+		return nil, nil, fmt.Errorf("start page doesn't exist")
 	}
 	if !scraper.IsWikiPageUrlExists(&endPage) {
-		return nil, fmt.Errorf("end page doesn't exist")
+		return nil, nil, fmt.Errorf("end page doesn't exist")
 	}
 
 	var found int32 = 0
 	pathsChannel := make(chan []string, 10) // Channel to collect valid paths
-	limiter := make(chan struct{}, 50)      // Concurrency limiter
+	limiter := make(chan struct{}, 3)       // Concurrency limiter
 
 	for depth := 0; depth <= maxDepth; depth++ {
 		var wg sync.WaitGroup
@@ -253,11 +228,11 @@ func IdsFirstGoRoutineAllPaths(startPage string, endPage string, maxDepth int) (
 
 		if atomic.LoadInt32(&found) == 1 {
 			close(pathsChannel) // Ensure no more writes to the channel
-			return allPaths, nil
+			return allPaths, visited, nil
 		}
 	}
 
-	return nil, fmt.Errorf("no path found within depth %d", maxDepth)
+	return nil, nil, fmt.Errorf("no path found within depth %d", maxDepth)
 }
 
 func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visited map[string]bool, path []string, found *int32, wg *sync.WaitGroup, pathsChannel chan []string, limiter chan struct{}, visitedMutex *sync.Mutex, allPaths *[][]string, allPathMutex *sync.Mutex) {

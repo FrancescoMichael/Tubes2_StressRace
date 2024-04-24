@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	algorithm "server/pkg/algorithm"
-	scraper "server/pkg/scraper"
-
 	"github.com/gin-gonic/gin"
 	// "../../cmd/app/main"
 )
@@ -41,41 +38,46 @@ func GetSearch(c *gin.Context) {
 }
 
 func GetResult(c *gin.Context) {
-	defer scraper.WriteJSON("links.json")
-	fmt.Println(searchData.URLStart)
-	var hasil []string
+	// defer scraper.WriteJSON("links.json")
+	// fmt.Println(searchData.URLStart)
+	// var hasil []string
+	// var visited [string]bool
 	// var hasillMultPath [][]string
-	var err error
-	scraper.LoadCache()
-	if searchData.Algorithm == "1" && searchData.Path == "1" {
-		hasil, err = algorithm.Bfs(searchData.URLStart, searchData.URLTarget)
+	// var err error
+	// scraper.LoadCache()
+	// if searchData.Algorithm == "1" && searchData.Path == "1" {
+	// 	hasil, visited, err = algorithm.BfsGoRoutine(searchData.URLStart, searchData.URLTarget)
 
-	} else if searchData.Algorithm == "2" && searchData.Path == "1" {
-		hasil, err = algorithm.IdsFirst(searchData.URLStart, searchData.URLTarget, 9)
-	}
+	// } else if searchData.Algorithm == "2" && searchData.Path == "1" {
+	// 	hasil, visited, err = algorithm.IdsFirst(searchData.URLStart, searchData.URLTarget, 9)
+
 	// } else if searchData.Algorithm == "1" && searchData.Path == "2" {
-	// 	hasillMultPath, err = algorithm.IdsFirstGoRoutineAllPaths(searchData.URLStart, searchData.URLTarget, 9)
+	// 	hasillMultPath, visited, err = algorithm.BfsMultPath(searchData.URLStart, searchData.URLTarget)
 
 	// } else if searchData.Algorithm == "2" && searchData.Path == "2" {
+	// 	hasillMultPath, visited, err = algorithm.IdsFirstGoRoutineAllPaths(searchData.URLStart, searchData.URLTarget, 10)
 
 	// }
-	// handle ketika ada error belom ada
-	if err != nil {
-		return
-	}
-	data := make([]Result, 1) // ini masih satu path saja
+	// // handle ketika ada error belom ada
+	// if err != nil {
+	// 	return
+	// }
+	// if searchData.Path == "1" {
+	// 	data := make([]Result, 1) // ini masih satu path saja
+	// 	data[0] = Result{
+	// 		ID:    "1",
+	// 		Title: scraper.PathToTitle(hasil),
+	// 		URL:   hasil,
+	// 	}
+	// 	// 	c.IndentedJSON(http.StatusCreated, data)
 
-	fmt.Println("Ini hasil : ", hasil)
-
-	// data[0] = Result{
-	// 	ID:    "1",
-	// 	Title: scraper.PathToTitle(hasil),
-	// 	URL:   hasil,
+	// } else if searchData.Path == "2" {
+	// 	data := make()
 	// }
 
-	c.IndentedJSON(http.StatusCreated, data)
+	// // 	fmt.Println("Ini hasil : ", hasil)
 
-	fmt.Println("halo")
+	// // fmt.Println("halo")
 }
 
 func OtherFunction() {

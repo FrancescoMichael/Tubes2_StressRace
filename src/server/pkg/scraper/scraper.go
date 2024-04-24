@@ -21,9 +21,6 @@ var LinkCache = make(map[string][]string)
 var mutexCache = sync.Mutex{}
 
 func WebScraping(url string, resultData *[]string) error {
-	// if !strings.Contains(url, "wikipedia.org") {
-	// 	return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
-	// }
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Get(url)
@@ -57,7 +54,6 @@ func GetScrapeLinksConcurrent(link string) []string {
 	mutexCache.Lock()
 	links, exist := LinkCache[link]
 	mutexCache.Unlock()
-
 
 	if !exist {
 		links = []string{}
@@ -217,6 +213,7 @@ func IsWikiPageUrlExists(url *string) bool {
 		fmt.Printf("HTTP request failed: %v\n", err)
 		return false
 	}
+
 	defer response.Body.Close() // Ensure the response body is closed
 
 	// Update the URL to the final redirected URL if not already done
