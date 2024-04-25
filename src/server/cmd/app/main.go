@@ -25,3 +25,26 @@ func main() {
 	// Run the server
 	router.Run(":8080")
 }
+
+// package main
+
+// import (
+// 	"log"
+// 	"os"
+// 	"os/signal"
+// 	"server/pkg/test"
+// 	"syscall"
+// )
+
+// func main() {
+// 	sigs := make(chan os.Signal, 1)
+// 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+// 	go func() {
+// 		sig := <-sigs
+// 		log.Printf("Received signal: %s", sig)
+// 		// Perform cleanup tasks, close resources, etc.
+// 		os.Exit(0) // Exit successfully after handling
+// 	}()
+// 	test.Test()
+// }

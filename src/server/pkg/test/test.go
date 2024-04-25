@@ -1,9 +1,7 @@
 package test
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"server/pkg/algorithm"
 	"server/pkg/scraper"
 	"time"
@@ -11,19 +9,22 @@ import (
 
 func Test() {
 	// defer scraper.WriteJSON("links.json")
-	// scraper.LoadCache()
-	reader := bufio.NewReader(os.Stdin)
+	scraper.LoadCache()
+	// reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Start Page Title : ")
-	urlStart, err := reader.ReadString('\n')
-	if err != nil {
-		return
-	}
+	// urlStart := "https://en.wikipedia.org/wiki/Joko_Widodo"
+	urlStart := "https://en.wikipedia.org/wiki/Neuroscience"
+	// if err != nil {
+	// 	return
+	// }
 	// urlStart = scraper.TitleToWikiUrl(urlStart)
 	fmt.Print("End Page Title : ")
-	urlEnd, err := reader.ReadString('\n')
-	if err != nil {
-		return
-	}
+	// urlEnd, err := reader.ReadString('\n')
+	// urlEnd := "https://en.wikipedia.org/wiki/Atheism"
+	urlEnd := "https://en.wikipedia.org/wiki/Springtail"
+	// if err != nil {
+	// 	return
+	// }
 	// urlEnd = scraper.TitleToWikiUrl(urlEnd)
 	fmt.Println(urlStart)
 	fmt.Println(urlEnd)
@@ -35,22 +36,24 @@ func Test() {
 	fmt.Print("5.BFS mult path \n")
 	fmt.Print("6.IDS mult path \n")
 	fmt.Print("Input : ")
-	var algo_input int
+	var algo_input int = 1
 	var visited map[string]bool
 	// var placeholder int
-	_, err = fmt.Scan(&algo_input)
-	if err != nil {
-		return
-	}
-	reader.ReadString('\n')
+	// _, err = fmt.Scan(&algo_input)
+	// if err != nil {
+	// 	return
+	// }
+	// reader.ReadString('\n')
 	var hasil []string
 	var allPath [][]string
+	var err error
 	start := time.Now()
 	if algo_input == 1 {
 		// hasil, err = algorithm.Bfs(urlStart, urlEnd)
 		hasil, visited, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
 	} else if algo_input == 2 {
-		hasil, visited, err = algorithm.IdsFirst(urlStart, urlEnd, 10)
+		// hasil, visited, err = algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 10)
+		// hasil, visited, err = algorithm.IdsFirstGoRoutineExp(urlStart, urlEnd, 10)
 
 	} else if algo_input == 3 {
 		hasil, visited, err = algorithm.BfsGoRoutine(urlStart, urlEnd)

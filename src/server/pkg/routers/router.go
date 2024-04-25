@@ -52,6 +52,7 @@ var PropGlobal Properties
 func GetResult(c *gin.Context) {
 	defer scraper.WriteJSON("links.json")
 	fmt.Println(searchData.URLStart)
+	fmt.Println(searchData.URLTarget)
 	var hasil []string
 	var visited map[string]bool
 	var hasillMultPath [][]string

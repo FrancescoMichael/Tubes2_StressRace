@@ -120,7 +120,7 @@ func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string
 
 	var found int32 = 0
 	pathsChannel := make(chan []string, 10) // Channel to collect valid paths
-	limiter := make(chan struct{}, 50)      // Concurrency limiter
+	limiter := make(chan struct{}, 6)       // Concurrency limiter
 
 	for depth := 0; depth <= maxDepth; depth++ {
 		var wg sync.WaitGroup
@@ -131,6 +131,8 @@ func IdsFirstGoRoutine(startPage string, endPage string, maxDepth int) ([]string
 		go DlsFirstGoRoutine(startPage, endPage, depth, visited, []string{}, &found, &wg, pathsChannel, limiter, &visitedMutex)
 
 		wg.Wait()
+		fmt.Println("Curr Depth : ", depth)
+		fmt.Println("curr visited : ", len(visited))
 		if atomic.LoadInt32(&found) == 1 {
 			close(pathsChannel) // Ensure no more writes to the channel
 			if path, ok := <-pathsChannel; ok {
@@ -209,25 +211,19 @@ func IdsFirstGoRoutineAllPaths(startPage string, endPage string, maxDepth int) (
 	}
 
 	var found int32 = 0
-	pathsChannel := make(chan []string, 10) // Channel to collect valid paths
-	limiter := make(chan struct{}, 3)       // Concurrency limiter
+	limiter := make(chan struct{}, 5) // Concurrency limiter
 
 	for depth := 0; depth <= maxDepth; depth++ {
 		var wg sync.WaitGroup
 		var allPathMutex sync.Mutex
 		visited := make(map[string]bool)
 		var visitedMutex sync.Mutex
+
 		wg.Add(1)
-
-		go DlsFirstGoRoutineAllPaths(startPage, endPage, depth, visited, []string{}, &found, &wg, pathsChannel, limiter, &visitedMutex, &allPaths, &allPathMutex)
-
+		go DlsFirstGoRoutineAllPaths(startPage, endPage, depth, visited, []string{}, &found, &wg, limiter, &visitedMutex, &allPaths, &allPathMutex)
 		wg.Wait()
 
-		// wg.Wait() // Wait for all goroutines at this depth to complete
-		fmt.Println(depth)
-
 		if atomic.LoadInt32(&found) == 1 {
-			close(pathsChannel) // Ensure no more writes to the channel
 			return allPaths, visited, nil
 		}
 	}
@@ -235,7 +231,7 @@ func IdsFirstGoRoutineAllPaths(startPage string, endPage string, maxDepth int) (
 	return nil, nil, fmt.Errorf("no path found within depth %d", maxDepth)
 }
 
-func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visited map[string]bool, path []string, found *int32, wg *sync.WaitGroup, pathsChannel chan []string, limiter chan struct{}, visitedMutex *sync.Mutex, allPaths *[][]string, allPathMutex *sync.Mutex) {
+func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visited map[string]bool, path []string, found *int32, wg *sync.WaitGroup, limiter chan struct{}, visitedMutex *sync.Mutex, allPaths *[][]string, allPathMutex *sync.Mutex) {
 	defer wg.Done()
 	defer func() { <-limiter }() // Release the limiter slot when done
 	limiter <- struct{}{}
@@ -278,7 +274,7 @@ func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visite
 		if !visited[value] {
 
 			wg.Add(1)
-			go DlsFirstGoRoutineAllPaths(value, endPage, depth-1, visited, path, found, wg, pathsChannel, limiter, visitedMutex, allPaths, allPathMutex)
+			go DlsFirstGoRoutineAllPaths(value, endPage, depth-1, visited, path, found, wg, limiter, visitedMutex, allPaths, allPathMutex)
 		}
 		visitedMutex.Unlock()
 	}
@@ -286,4 +282,17 @@ func DlsFirstGoRoutineAllPaths(currUrl string, endPage string, depth int, visite
 	visited[currUrl] = false // Unmark the current node
 	visitedMutex.Unlock()
 	// return
+}
+
+func MakePathIds(parent map[string]string, currUrl string) []string {
+	var path []string
+	seen := make(map[string]bool) // Track visited nodes to detect cycles.
+
+	fmt.Println("in MAKEPATH")
+	for curr := currUrl; curr != "" && !seen[curr]; curr = parent[curr] {
+		seen[curr] = true
+		path = append([]string{curr}, path...)
+	}
+	fmt.Println("out Make Path")
+	return path
 }
