@@ -38,7 +38,7 @@ WikiRace is a game designed to find the shortest path between two Wikipedia arti
 
 ## Setup
 
-Make sure your golang version is appropriate.ry running `go version`, if not found, it means your Golang installation is not correct. Required version 1.21.6 or higher. You can install go from this [Go](https://go.dev/doc/install)
+Make sure your golang version is appropriate. try running `go version`, if not found, it means your Golang installation is not correct. Required version 1.21.6 or higher. You can install go from this [Go](https://go.dev/doc/install)
 
 To run this repository locally, ensure you have Node.js and npm installed. If you haven't installed them yet, you can follow the instructions provided in this [link](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
