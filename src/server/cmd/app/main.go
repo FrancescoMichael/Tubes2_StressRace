@@ -2,12 +2,14 @@ package main
 
 import (
 	"server/pkg/routers"
+	"server/pkg/scraper"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	defer scraper.WriteJSON("links.json")
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{

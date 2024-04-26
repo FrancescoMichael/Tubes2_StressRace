@@ -3,7 +3,6 @@ package scraper
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -153,14 +152,7 @@ func IsWikiPageUrlExists(url *string) bool {
 // load cache
 func LoadCache(filename string) {
 	Unique = make(map[string]bool)
-	err := ReadJSON(filename)
-	if err != nil {
-		err2 := WriteJSON(filename)
-		if err2 != nil {
-			log.Fatal(err2)
-		}
-
-	}
+	ReadJSON(filename)
 }
 
 func GetScrapeLinks(link string) []string {

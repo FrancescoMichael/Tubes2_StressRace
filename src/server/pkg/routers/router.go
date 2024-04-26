@@ -50,7 +50,6 @@ func GetSearch(c *gin.Context) {
 var PropGlobal Properties
 
 func GetResult(c *gin.Context) {
-	defer scraper.WriteJSON("links.json")
 	fmt.Println("Url Start: ", searchData.URLStart)
 	fmt.Println("Url Target: ", searchData.URLTarget)
 	var hasil []string
