@@ -17,6 +17,7 @@ func appendNode(list []node, newNode node) []node {
 	return append(list, newNode)
 }
 
+// this is the most simple version of BFS, all BFS versions will be based on this
 func Bfs(start string, end string) ([]string, error) {
 	start = strings.TrimSpace(start)
 	end = strings.TrimSpace(end)

@@ -51,24 +51,29 @@ var PropGlobal Properties
 
 func GetResult(c *gin.Context) {
 	defer scraper.WriteJSON("links.json")
-	fmt.Println(searchData.URLStart)
-	fmt.Println(searchData.URLTarget)
+	fmt.Println("Url Start: ", searchData.URLStart)
+	fmt.Println("Url Target: ", searchData.URLTarget)
 	var hasil []string
 	var visited map[string]bool
 	var hasillMultPath [][]string
 	var err error
+	var counter int
 	scraper.LoadCache()
 	if searchData.Algorithm == "1" && searchData.Path == "1" {
+		fmt.Println("Picked BFS One Solution")
 		hasil, visited, err = algorithm.BfsGoRoutine(searchData.URLStart, searchData.URLTarget)
 
 	} else if searchData.Algorithm == "2" && searchData.Path == "1" {
-		// hasil, visited, err = algorithm.IdsFirstOpt(searchData.URLStart, searchData.URLTarget, 9)
+		fmt.Println("Picked IDS One Solution")
+		hasil, counter, err = algorithm.IdsFirstPath(searchData.URLStart, searchData.URLTarget, 9)
 
 	} else if searchData.Algorithm == "1" && searchData.Path == "2" {
+		fmt.Println("Picked BFS ALL Solution")
 		hasillMultPath, visited, err = algorithm.BfsAllPathGoRoutine(searchData.URLStart, searchData.URLTarget)
 
 	} else if searchData.Algorithm == "2" && searchData.Path == "2" {
-		// hasillMultPath, visited, err = algorithm.IdsFirstGoRoutineAllPaths(searchData.URLStart, searchData.URLTarget, 10)
+		fmt.Println("Picked IDS ALL Solution")
+		hasillMultPath, counter, err = algorithm.IdsAllPath(searchData.URLStart, searchData.URLTarget, 10)
 
 	}
 
@@ -76,6 +81,7 @@ func GetResult(c *gin.Context) {
 		return
 	}
 	if searchData.Path == "1" {
+
 		data := make([]Result, 1) // ini masih satu path saja
 		data[0] = Result{
 			ID:    "1",
@@ -101,12 +107,13 @@ func GetResult(c *gin.Context) {
 		PropGlobal.PATH = strconv.Itoa(len(hasillMultPath))
 	}
 	PropGlobal.ID = "1"
+	if searchData.Algorithm == "1" {
+		PropGlobal.ARTICLES = strconv.Itoa(len(visited))
+	} else if searchData.Algorithm == "2" {
+		PropGlobal.ARTICLES = strconv.Itoa(counter)
+	}
+	fmt.Println("AMOUNT OF ARTICLES: ", PropGlobal.ARTICLES)
 
-	PropGlobal.ARTICLES = strconv.Itoa(len(visited))
-
-	// 	fmt.Println("Ini hasil : ", hasil)
-
-	// fmt.Println("halo")
 }
 
 func GetProperties(c *gin.Context) {

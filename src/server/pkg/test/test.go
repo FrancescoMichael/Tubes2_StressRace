@@ -41,7 +41,7 @@ func Test() {
 	fmt.Print("6.IDS mult path \n")
 	fmt.Print("Input : ")
 	var algo_input int = 4
-	var visited map[string]bool
+	// var visited map[string]bool
 
 	var hasil []string
 	var allPath [][]string
@@ -49,21 +49,21 @@ func Test() {
 	start := time.Now()
 	if algo_input == 1 {
 		// hasil, err = algorithm.Bfs(urlStart, urlEnd)
-		hasil, visited, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
+		hasil, _, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
 	} else if algo_input == 2 {
 		// hasil, visited, err = algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 10)
 		// hasil, visited, err = algorithm.IdsFirstGoRoutineExp(urlStart, urlEnd, 10)
 		// hasil, visited, err = algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 10)
 
 	} else if algo_input == 3 {
-		hasil, visited, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
+		hasil, _, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
 	} else if algo_input == 4 {
-		hasil, visited, err = algorithm.IdsFirstPath(urlStart, urlEnd, 10)
+		hasil, _, err = algorithm.IdsFirstPath(urlStart, urlEnd, 10)
 	} else if algo_input == 5 {
 
-		allPath, visited, err = algorithm.BfsAllPathGoRoutine(urlStart, urlEnd)
+		allPath, _, err = algorithm.BfsAllPathGoRoutine(urlStart, urlEnd)
 	} else if algo_input == 6 {
-		allPath, visited, _ = algorithm.IdsAllPath(urlStart, urlEnd, 10)
+		allPath, _, _ = algorithm.IdsAllPath(urlStart, urlEnd, 10)
 	}
 	end := time.Now()
 	if err != nil {
@@ -74,14 +74,14 @@ func Test() {
 		fmt.Println("Time : ", end.Sub(start))
 		if algo_input == 1 || algo_input == 2 || algo_input == 3 || algo_input == 4 {
 			fmt.Printf("Depth : %d\n", len(hasil))
-			fmt.Printf("Articles Checked : %d\n", len(visited))
+			fmt.Printf("Articles Checked : %d\n", len(scraper.Unique))
 			fmt.Println(hasil)
 			fmt.Println(scraper.PathToTitle(hasil))
 		} else {
 			for _, link := range allPath {
 				fmt.Println(link)
 			}
-			fmt.Printf("Articles Checked : %d\n", len(visited))
+			fmt.Printf("Articles Checked : %d\n", len(scraper.Unique))
 			fmt.Printf("Depth : %d\n", len(allPath[0]))
 			fmt.Printf("Amount of path : %d\n", len(allPath))
 		}

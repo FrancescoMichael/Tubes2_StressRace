@@ -1,7 +1,6 @@
 package scraper
 
 import (
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,19 +10,17 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gocolly/colly/v2"
 )
 
 var LinkCache = make(map[string][]string)
-var CounterArticle = 0
 var mutexCache = sync.Mutex{}
+var Unique map[string]bool
 
 func WebScraping(url string, resultData *[]string) error {
 
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: 10 * time.Second} // timeout
 	resp, err := client.Get(url)
 	if err != nil {
 		return fmt.Errorf("error making GET request: %v", err)
@@ -53,6 +50,7 @@ func WebScraping(url string, resultData *[]string) error {
 
 func GetScrapeLinksConcurrent(link string) []string {
 	mutexCache.Lock()
+	Unique[link] = true
 	links, exist := LinkCache[link]
 	mutexCache.Unlock()
 
@@ -64,31 +62,11 @@ func GetScrapeLinksConcurrent(link string) []string {
 
 		mutexCache.Lock()
 		LinkCache[link] = links
-		CounterArticle += 1
 		mutexCache.Unlock()
 	}
 	return links
 }
 
-func WriteCsv(filename string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return nil
-	}
-	defer file.Close()
-	writer := csv.NewWriter(file)
-	defer writer.Flush()
-
-	for key, links := range LinkCache {
-		row := append([]string{key}, links...)
-		if err := writer.Write(row); err != nil {
-			return err
-		}
-
-	}
-	return nil
-
-}
 func WriteJSON(filename string) error {
 	file, err := os.Create(filename)
 	if err != nil {
@@ -100,34 +78,6 @@ func WriteJSON(filename string) error {
 	err = encoder.Encode(LinkCache)
 	if err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func ReadCsv(filename string) error {
-	file, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	reader := csv.NewReader(file)
-
-	// Assuming there is no header row
-	for {
-		row, err := reader.Read()
-		if err != nil {
-			if err == csv.ErrFieldCount || strings.Contains(err.Error(), "EOF") {
-				break // End of file or a line with wrong field count
-			}
-			return err
-		}
-		if len(row) > 1 {
-			key := row[0]
-			links := row[1:]
-			LinkCache[key] = links
-		}
 	}
 
 	return nil
@@ -149,14 +99,6 @@ func ReadJSON(filename string) error {
 	return nil
 }
 
-func TitleToWikiUrl(title string) string {
-	title = strings.TrimSpace(title)
-	title = toCamelCase(title)
-	title = strings.ReplaceAll(title, " ", "_")
-	title = url.QueryEscape(title)
-	return fmt.Sprintf("https://en.wikipedia.org/wiki/%s", title)
-}
-
 func wikiUrlToTitle(wikiUrl string) string {
 	decoded, err := url.QueryUnescape(strings.TrimPrefix(wikiUrl, "https://en.wikipedia.org/wiki/"))
 	if err != nil {
@@ -171,30 +113,6 @@ func PathToTitle(path []string) []string {
 		hasil = append(hasil, wikiUrlToTitle(link))
 	}
 	return hasil
-}
-
-// toCamelCase converts the title into title case. This is only experimental, user best write the title correctly !
-func toCamelCase(input string) string {
-	words := strings.Fields(input) // split string with white space delimiter
-	for i, word := range words {
-		runes := []rune(word)            // convert string to slice of runes, deal with string beyonc ascii
-		if i == 0 || i == len(words)-1 { // Always capitalize the first and last word
-			runes[0] = unicode.ToUpper(runes[0])
-		} else {
-			// Lower case for specific small words in the middle of a title
-			lower := strings.ToLower(word)
-			if lower == "the" || lower == "and" || lower == "in" || lower == "of" || lower == "a" {
-				runes = []rune(lower)
-			} else {
-				runes[0] = unicode.ToUpper(runes[0])
-			}
-		}
-		for j := 1; j < len(runes); j++ {
-			runes[j] = unicode.ToLower(runes[j])
-		}
-		words[i] = string(runes)
-	}
-	return strings.Join(words, " ")
 }
 
 // IsWikiPageUrlExists checks if a Wikipedia page URL exists and updates it to the redirected URL.
@@ -226,7 +144,7 @@ func IsWikiPageUrlExists(url *string) bool {
 }
 
 func LoadCache() {
-	CounterArticle = 0
+	Unique = make(map[string]bool)
 	err := ReadJSON("links.json")
 	if err != nil {
 		err2 := WriteJSON("links.json")
@@ -235,36 +153,6 @@ func LoadCache() {
 		}
 
 	}
-}
-
-func WebScrapingColly(url string, resultData *[]string) error {
-	if !IsWikiPageUrlExists(&url) {
-		return fmt.Errorf("invalid URL: only Wikipedia articles are allowed")
-	}
-
-	c := colly.NewCollector(
-		colly.AllowedDomains("wikipedia.org", "en.wikipedia.org"),
-	)
-
-	c.OnError(func(r *colly.Response, err error) {
-		log.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
-	})
-
-	c.OnHTML("#bodyContent a[href]", func(e *colly.HTMLElement) {
-		href := e.Attr("href")
-		// Check if the link is internal to Wikipedia
-		if strings.HasPrefix(href, "/wiki/") {
-			completeLink := "https://en.wikipedia.org" + href
-			*resultData = append(*resultData, completeLink)
-		}
-	})
-	// Start scraping
-	err := c.Visit(url)
-	if err != nil {
-		return err
-	}
-	c.Wait()
-	return nil
 }
 
 func GetScrapeLinks(link string) []string {
@@ -279,19 +167,6 @@ func GetScrapeLinks(link string) []string {
 			LinkCache[link] = links
 		}
 
-		return links
-	}
-	return links
-}
-
-func GetScrapeLinksColly(link string) []string {
-	links, exist := LinkCache[link]
-	if !exist {
-		err := WebScrapingColly(link, &links)
-		if err != nil {
-			return nil
-		}
-		LinkCache[link] = links
 		return links
 	}
 	return links
