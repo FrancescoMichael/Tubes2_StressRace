@@ -39,7 +39,7 @@ func WebScraping(url string, resultData *[]string) error {
 
 	doc.Find("#bodyContent a").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
-		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] {
+		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] && !strings.HasPrefix(href, "/wiki/Category:") && !strings.HasPrefix(href, "/wiki/Template:") && !strings.HasPrefix(href, "/wiki/Special:") && !strings.HasPrefix(href, "/wiki/Wikipedia:") && !strings.HasPrefix(href, "/wiki/Help:") && !strings.HasPrefix(href, "/wiki/Portal:") && !strings.HasPrefix(href, "/wiki/Template_talk:"){
 			*resultData = append(*resultData, "https://en.wikipedia.org"+href)
 			hasSeen[href] = true
 		}

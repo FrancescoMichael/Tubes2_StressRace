@@ -4,21 +4,9 @@ import Pagination from "./Pagination";
 import axios from "axios";
 import GraphView from "../../graph";
 
-// import "./styles.css";
-// import "./network.css";
-
-
-const properties = [
-  {
-    "id" : "1",
-    "degrees" : "3",
-    "articles" : "375",
-    "path" : "2",
-  }
-]
-
 export default function Result({ isLoading, setIsLoading, startTime }) {
   const [data, setData] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage] = useState(6);
   const [endTime, setEndTime] = useState(0);
@@ -30,7 +18,10 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
         try {
           const result = await axios("http://localhost:8080/api/result");
           setData(result.data);
-          console.log(result.data);
+
+          const propertiesResult = await axios("http://localhost:8080/api/properties");
+          setProperties(propertiesResult.data);
+
           setEndTime(performance.now());
           setIsLoading(false);
         } catch (error) {
@@ -75,12 +66,12 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
           </div>
         ) : null}
       </div>
-      {data.length > 0 && data.length > 0 && !isLoading ? (
+      {data.length > 0 && !isLoading ? (
         <>
           <div className="flex flex-col items-center justify-center text-center text-white text-2xl mt-8">
-            <p className="mb-4">With the minimum of {properties[0].degrees} degrees</p>
-            <p className="mb-4">In {properties[0].articles} articles</p>
-            <p className="mb-4">We found {properties[0].path} path(s)</p>
+            <p className="mb-4">With the minimum of {properties.degrees} degrees</p>
+            <p className="mb-4">In {properties.articles} articles</p>
+            <p className="mb-4">We found {properties.path} path(s)</p>
             <p className="mb-4">It takes {duration <= 0 ? 0 : duration} miliseconds</p>
           </div>
 
