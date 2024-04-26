@@ -88,7 +88,7 @@ func GetResult(c *gin.Context) {
 			Title: scraper.PathToTitle(hasil),
 			URL:   hasil,
 		}
-		PropGlobal.DEGREES = strconv.Itoa(len(hasil))
+		PropGlobal.DEGREES = strconv.Itoa(len(hasil) - 1)
 		PropGlobal.PATH = "1"
 		c.IndentedJSON(http.StatusCreated, data)
 
@@ -103,7 +103,7 @@ func GetResult(c *gin.Context) {
 			}
 		}
 		c.IndentedJSON(http.StatusCreated, results)
-		PropGlobal.DEGREES = strconv.Itoa(len(hasillMultPath[0]))
+		PropGlobal.DEGREES = strconv.Itoa(len(hasillMultPath[0]) - 1)
 		PropGlobal.PATH = strconv.Itoa(len(hasillMultPath))
 	}
 	PropGlobal.ID = "1"
@@ -112,6 +112,9 @@ func GetResult(c *gin.Context) {
 	} else if searchData.Algorithm == "2" {
 		PropGlobal.ARTICLES = strconv.Itoa(counter)
 	}
+
+	fmt.Println("Number of paths : ", PropGlobal.PATH)
+	fmt.Println("DEPTH : ", PropGlobal.DEGREES)
 	fmt.Println("AMOUNT OF ARTICLES: ", PropGlobal.ARTICLES)
 
 }
