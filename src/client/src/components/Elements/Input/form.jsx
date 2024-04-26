@@ -36,10 +36,16 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
     const handleSearch = async () => {
         if(searchTarget === "" || searchStart === "") {
             console.log(notification);
-            setNotification(" Please input your data correctly!");
+            setNotification("Please input your data correctly!");
             setTimeout(() => {
                 setNotification("");
             }, 2000);
+        // } else if(urlStart === "" || urlTarget === ""){
+        //     console.log(notification);
+        //     setNotification("The link does not exist");
+        //     setTimeout(() => {
+        //         setNotification("");
+        //     }, 2000);
         } else {
             setIsLoading(true);
             setNotification("");

@@ -17,9 +17,26 @@ function Input(props){
         setIsVisible(inputValue !== "");
     }
 
-    function titleToURL(title) {
-        return "https://en.wikipedia.org/wiki/" + title;
-    }
+    // function titleToURL(title) {
+    //     return "https://en.wikipedia.org/wiki/" + title.replace(/ /g, '_');
+    // }
+
+    // function URLExist(testURL) {
+    //     fetch(testURL)
+    //         .then(response => {
+    //             if (response.ok) {
+    //                 console.log('URL exists');
+    //                 return true;
+    //             } else {
+    //                 console.error('URL does not exist');
+    //                 return false;
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error('Error occurred while checking URL:', error);
+    //         });
+
+    // }
 
     const handleKeyDown = e => {
         if(selectedItem < searchData.length) {
@@ -35,11 +52,17 @@ function Input(props){
                 setSelectedItem(-1)
                 setIsVisible(false);
                 setInputSearch(options[selectedItem].label);
-            } else if(e.key === "Enter" && selectedItem == -1) {
-                setSearch(e.target.value)
-                setIsVisible(false);
-                setURLSearch(titleToURL(search))
             }
+            // } else if(e.key === "Enter" && selectedItem == -1) {
+            //     setSearch(e.target.value)
+            //     setIsVisible(false);
+            //     // if(URLExist(titleToURL(search))) {
+            //     //     setURLSearch(titleToURL(search))
+            //     // } else {
+            //     //     setURLSearch("")
+            //     // }
+            //     setURLSearch("")
+            // }
         } else {
             setSelectedItem(-1)
         }        
