@@ -9,11 +9,13 @@ import (
 
 func Test() {
 	// defer scraper.WriteJSON("links.json")
-	scraper.LoadCache()
+	// scraper.LoadCache()
 	// reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Start Page Title : ")
 	// urlStart := "https://en.wikipedia.org/wiki/Joko_Widodo"
 	urlStart := "https://en.wikipedia.org/wiki/Neuroscience"
+	// urlStart := "https://en.wikipedia.org/wiki/Russia"
+	// urlStart := "https://en.wikipedia.org/wiki/Neuroscience"
 	// if err != nil {
 	// 	return
 	// }
@@ -22,6 +24,8 @@ func Test() {
 	// urlEnd, err := reader.ReadString('\n')
 	// urlEnd := "https://en.wikipedia.org/wiki/Atheism"
 	urlEnd := "https://en.wikipedia.org/wiki/Springtail"
+	// urlEnd := "https://en.wikipedia.org/wiki/Joko_Widodo"
+	// urlEnd := "https://en.wikipedia.org/wiki/Brain%E2%80%93computer_interface"
 	// if err != nil {
 	// 	return
 	// }
@@ -36,14 +40,9 @@ func Test() {
 	fmt.Print("5.BFS mult path \n")
 	fmt.Print("6.IDS mult path \n")
 	fmt.Print("Input : ")
-	var algo_input int = 1
+	var algo_input int = 4
 	var visited map[string]bool
-	// var placeholder int
-	// _, err = fmt.Scan(&algo_input)
-	// if err != nil {
-	// 	return
-	// }
-	// reader.ReadString('\n')
+
 	var hasil []string
 	var allPath [][]string
 	var err error
@@ -54,16 +53,17 @@ func Test() {
 	} else if algo_input == 2 {
 		// hasil, visited, err = algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 10)
 		// hasil, visited, err = algorithm.IdsFirstGoRoutineExp(urlStart, urlEnd, 10)
+		// hasil, visited, err = algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 10)
 
 	} else if algo_input == 3 {
 		hasil, visited, err = algorithm.BfsGoRoutine(urlStart, urlEnd)
 	} else if algo_input == 4 {
-		hasil, visited, err = algorithm.IdsFirstGoRoutine(urlStart, urlEnd, 10)
+		hasil, visited, err = algorithm.IdsFirstPath(urlStart, urlEnd, 10)
 	} else if algo_input == 5 {
-		// allPath, visited, err = algorithm.BfsMultPathGoRoutine(urlStart, urlEnd)
+
 		allPath, visited, err = algorithm.BfsAllPathGoRoutine(urlStart, urlEnd)
 	} else if algo_input == 6 {
-		allPath, visited, _ = algorithm.IdsFirstGoRoutineAllPaths(urlStart, urlEnd, 10)
+		allPath, visited, _ = algorithm.IdsAllPath(urlStart, urlEnd, 10)
 	}
 	end := time.Now()
 	if err != nil {

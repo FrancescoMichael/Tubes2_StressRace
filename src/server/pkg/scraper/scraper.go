@@ -18,6 +18,7 @@ import (
 )
 
 var LinkCache = make(map[string][]string)
+var CounterArticle = 0
 var mutexCache = sync.Mutex{}
 
 func WebScraping(url string, resultData *[]string) error {
@@ -63,6 +64,7 @@ func GetScrapeLinksConcurrent(link string) []string {
 
 		mutexCache.Lock()
 		LinkCache[link] = links
+		CounterArticle += 1
 		mutexCache.Unlock()
 	}
 	return links
@@ -224,6 +226,7 @@ func IsWikiPageUrlExists(url *string) bool {
 }
 
 func LoadCache() {
+	CounterArticle = 0
 	err := ReadJSON("links.json")
 	if err != nil {
 		err2 := WriteJSON("links.json")
@@ -280,24 +283,6 @@ func GetScrapeLinks(link string) []string {
 	}
 	return links
 }
-
-// func GetScrapeLinksConcurrent(link string, mute *sync.Mutex) []string {
-// 	links, exist := LinkCache[link]
-// 	if !exist {
-// 		err := WebScraping(link, &links)
-// 		if err != nil {
-// 			return nil
-// 		}
-// 		if links != nil {
-// 			mute.Lock()
-// 			LinkCache[link] = links
-// 			mute.Unlock()
-// 		}
-
-// 		return links
-// 	}
-// 	return links
-// }
 
 func GetScrapeLinksColly(link string) []string {
 	links, exist := LinkCache[link]

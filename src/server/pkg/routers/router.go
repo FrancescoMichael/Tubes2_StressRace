@@ -62,13 +62,13 @@ func GetResult(c *gin.Context) {
 		hasil, visited, err = algorithm.BfsGoRoutine(searchData.URLStart, searchData.URLTarget)
 
 	} else if searchData.Algorithm == "2" && searchData.Path == "1" {
-		hasil, visited, err = algorithm.IdsFirst(searchData.URLStart, searchData.URLTarget, 9)
+		// hasil, visited, err = algorithm.IdsFirstOpt(searchData.URLStart, searchData.URLTarget, 9)
 
 	} else if searchData.Algorithm == "1" && searchData.Path == "2" {
 		hasillMultPath, visited, err = algorithm.BfsAllPathGoRoutine(searchData.URLStart, searchData.URLTarget)
 
 	} else if searchData.Algorithm == "2" && searchData.Path == "2" {
-		hasillMultPath, visited, err = algorithm.IdsFirstGoRoutineAllPaths(searchData.URLStart, searchData.URLTarget, 10)
+		// hasillMultPath, visited, err = algorithm.IdsFirstGoRoutineAllPaths(searchData.URLStart, searchData.URLTarget, 10)
 
 	}
 
