@@ -14,24 +14,25 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var LinkCache = make(map[string][]string)
-var mutexCache = sync.Mutex{}
-var Unique map[string]bool
+var LinkCache = make(map[string][]string) // store cache links
+var mutexCache = sync.Mutex{}             // mutex for accessing linkCache
+var Unique map[string]bool                // store unique urls
 
+// func WebScraping will scrape all unique urls
 func WebScraping(url string, resultData *[]string) error {
 
-	client := &http.Client{Timeout: 10 * time.Second} // timeout
+	client := &http.Client{Timeout: 10 * time.Second} // timeout, 10 second
 	resp, err := client.Get(url)
 	if err != nil {
-		return fmt.Errorf("error making GET request: %v", err)
+		return fmt.Errorf("error making GET request: %v", err) // getting request error
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("received non-200 status code: %d", resp.StatusCode)
+		return fmt.Errorf("received non-200 status code: %d", resp.StatusCode) // status error
 	}
 
-	hasSeen := make(map[string]bool)
+	hasSeen := make(map[string]bool) // initialize map to prevent duplicate links
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		return err
@@ -39,7 +40,8 @@ func WebScraping(url string, resultData *[]string) error {
 
 	doc.Find("#bodyContent a").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
-		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] {
+		// exclude certain links
+		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] && !strings.HasPrefix(href, "/wiki/Category:") && !strings.HasPrefix(href, "/wiki/Template:") && !strings.HasPrefix(href, "/wiki/Special:") && !strings.HasPrefix(href, "/wiki/Wikipedia:") && !strings.HasPrefix(href, "/wiki/Help:") && !strings.HasPrefix(href, "/wiki/Portal:") && !strings.HasPrefix(href, "/wiki/Template_talk:") {
 			*resultData = append(*resultData, "https://en.wikipedia.org"+href)
 			hasSeen[href] = true
 		}
@@ -48,25 +50,27 @@ func WebScraping(url string, resultData *[]string) error {
 	return nil
 }
 
+// getting scraping concurrently
 func GetScrapeLinksConcurrent(link string) []string {
-	mutexCache.Lock()
+	mutexCache.Lock() // lock cache
 	Unique[link] = true
 	links, exist := LinkCache[link]
-	mutexCache.Unlock()
+	mutexCache.Unlock() // unlock cache
 
-	if !exist {
+	if !exist { // if link is not a key in LinkCache, as in the link has not been scraped before
 		links = []string{}
 		if err := WebScraping(link, &links); err != nil {
 			return nil
 		}
 
-		mutexCache.Lock()
+		mutexCache.Lock() // lock cache
 		LinkCache[link] = links
 		mutexCache.Unlock()
 	}
 	return links
 }
 
+// record link scraping in json format
 func WriteJSON(filename string) error {
 	file, err := os.Create(filename)
 	if err != nil {
@@ -83,6 +87,7 @@ func WriteJSON(filename string) error {
 	return nil
 }
 
+// read json file
 func ReadJSON(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -99,6 +104,7 @@ func ReadJSON(filename string) error {
 	return nil
 }
 
+// change URL into a wikipedia link
 func wikiUrlToTitle(wikiUrl string) string {
 	decoded, err := url.QueryUnescape(strings.TrimPrefix(wikiUrl, "https://en.wikipedia.org/wiki/"))
 	if err != nil {
@@ -107,6 +113,7 @@ func wikiUrlToTitle(wikiUrl string) string {
 	return strings.ReplaceAll(decoded, "_", " ")
 }
 
+// change path URL to path Title
 func PathToTitle(path []string) []string {
 	var hasil []string
 	for _, link := range path {
@@ -134,20 +141,21 @@ func IsWikiPageUrlExists(url *string) bool {
 		return false
 	}
 
-	defer response.Body.Close() // Ensure the response body is closed
+	defer response.Body.Close()
 
-	// Update the URL to the final redirected URL if not already done
+	// Update the URL to the final redirected
 	*url = response.Request.URL.String()
 
-	// Check if the status code is in the 2xx range, indicating success
+	// return bool if status code is 2xx, meaning it has succeded
 	return response.StatusCode >= 200 && response.StatusCode < 300
 }
 
-func LoadCache() {
+// load cache
+func LoadCache(filename string) {
 	Unique = make(map[string]bool)
-	err := ReadJSON("links.json")
+	err := ReadJSON(filename)
 	if err != nil {
-		err2 := WriteJSON("links.json")
+		err2 := WriteJSON(filename)
 		if err2 != nil {
 			log.Fatal(err2)
 		}

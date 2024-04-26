@@ -58,7 +58,7 @@ func GetResult(c *gin.Context) {
 	var hasillMultPath [][]string
 	var err error
 	var counter int
-	scraper.LoadCache()
+	scraper.LoadCache("links.json")
 	if searchData.Algorithm == "1" && searchData.Path == "1" {
 		fmt.Println("Picked BFS One Solution")
 		hasil, visited, err = algorithm.BfsGoRoutine(searchData.URLStart, searchData.URLTarget)
