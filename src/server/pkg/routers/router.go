@@ -52,6 +52,8 @@ var PropGlobal Properties
 func GetResult(c *gin.Context) {
 	fmt.Println("Url Start: ", searchData.URLStart)
 	fmt.Println("Url Target: ", searchData.URLTarget)
+	fmt.Println("Algorithm Before : ", searchData.Algorithm)
+	fmt.Println("searchData.Path Before : ", searchData.Path)
 	var hasil []string
 	var visited map[string]bool
 	var hasillMultPath [][]string
@@ -75,6 +77,8 @@ func GetResult(c *gin.Context) {
 		hasillMultPath, counter, err = algorithm.IdsAllPath(searchData.URLStart, searchData.URLTarget, 10)
 
 	}
+	fmt.Println("Algorithm after: ", searchData.Algorithm)
+	fmt.Println("searchData.Path after : ", searchData.Path)
 
 	if err != nil {
 		return
