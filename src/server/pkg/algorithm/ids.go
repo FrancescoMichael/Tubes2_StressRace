@@ -96,6 +96,7 @@ func IdsFirstPath(startUrl string, endUrl string, maxDepth int) ([]string, int, 
 // dlsFirstPath functions similarly to dls, but it utilizes goroutines and terminates as soon as a path is found
 func dlsFirstPath(currUrl string, endUrl string, depth int, resultPaths *[]string, currPath []string) {
 	// fmt.Println(currUrl)
+	// fmt.Println(currUrl)
 	LockPaths.Lock()
 	newPath := append(currPath, currUrl)
 
@@ -113,8 +114,22 @@ func dlsFirstPath(currUrl string, endUrl string, depth int, resultPaths *[]strin
 		return
 	}
 
-	limiter := make(chan struct{}, 15) // limits how many go routines are running concurrently
-	for _, urlNow := range scraper.GetScrapeLinksConcurrent(currUrl) {
+	allUrlNow := scraper.GetScrapeLinksConcurrent(currUrl)
+	if allUrlNow == nil {
+		return
+	}
+
+	var relevantLen int
+	if len(allUrlNow) < 19 {
+		relevantLen = len(allUrlNow) - 3
+		if relevantLen < 0 {
+			relevantLen = 1
+		}
+	} else {
+		relevantLen = 20
+	}
+	limiter := make(chan struct{}, relevantLen)
+	for _, urlNow := range allUrlNow {
 		limiter <- struct{}{}
 		go func(nextUrl string) {
 			dlsFirstPath(nextUrl, endUrl, depth-1, resultPaths, newPath)
@@ -161,9 +176,22 @@ func dlsAllPath(currUrl string, endUrl string, depth int, paths *[][]string, cur
 		return
 	}
 	newPath := append(currPath, currUrl)
+	allUrlNow := scraper.GetScrapeLinksConcurrent(currUrl)
+	if allUrlNow == nil {
+		return
+	}
+	var relevantLen int
+	if len(allUrlNow) < 15 {
+		relevantLen = len(allUrlNow) - 3
+		if relevantLen < 0 {
+			relevantLen = 1
+		}
+	} else {
+		relevantLen = 15
+	}
+	limiter := make(chan struct{}, relevantLen)
 
-	limiter := make(chan struct{}, 15)
-	for _, urlNow := range scraper.GetScrapeLinksConcurrent(currUrl) {
+	for _, urlNow := range allUrlNow {
 		limiter <- struct{}{}
 		go func(nextUrl string) {
 			dlsAllPath(nextUrl, endUrl, depth-1, paths, newPath)

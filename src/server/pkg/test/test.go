@@ -9,11 +9,11 @@ import (
 
 func Test() {
 	// defer scraper.WriteJSON("links.json")
-	// scraper.LoadCache()
+	scraper.LoadCache("love.json")
 	// reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Start Page Title : ")
 	// urlStart := "https://en.wikipedia.org/wiki/Joko_Widodo"
-	urlStart := "https://en.wikipedia.org/wiki/Neuroscience"
+	urlStart := "https://en.wikipedia.org/wiki/Medan_Prijaji"
 	// urlStart := "https://en.wikipedia.org/wiki/Russia"
 	// urlStart := "https://en.wikipedia.org/wiki/Neuroscience"
 	// if err != nil {
@@ -23,7 +23,7 @@ func Test() {
 	fmt.Print("End Page Title : ")
 	// urlEnd, err := reader.ReadString('\n')
 	// urlEnd := "https://en.wikipedia.org/wiki/Atheism"
-	urlEnd := "https://en.wikipedia.org/wiki/Springtail"
+	urlEnd := "https://en.wikipedia.org/wiki/Adolf_Hitler"
 	// urlEnd := "https://en.wikipedia.org/wiki/Joko_Widodo"
 	// urlEnd := "https://en.wikipedia.org/wiki/Brain%E2%80%93computer_interface"
 	// if err != nil {

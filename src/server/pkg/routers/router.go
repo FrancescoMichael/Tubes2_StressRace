@@ -6,6 +6,7 @@ import (
 	"server/pkg/algorithm"
 	"server/pkg/scraper"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	// "../../cmd/app/main"
@@ -50,6 +51,7 @@ func GetSearch(c *gin.Context) {
 var PropGlobal Properties
 
 func GetResult(c *gin.Context) {
+	time.Sleep(100 * time.Millisecond)
 	fmt.Println("Url Start: ", searchData.URLStart)
 	fmt.Println("Url Target: ", searchData.URLTarget)
 	fmt.Println("Algorithm Before : ", searchData.Algorithm)
