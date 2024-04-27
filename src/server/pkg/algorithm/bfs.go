@@ -194,7 +194,6 @@ func BfsMultPath(start string, end string) ([][]string, map[string]bool, error) 
 	return makePathAll(parent, start, end), visited, nil
 }
 
-// func BfsAllPathGoRoutine is the same as BfsAllPath but it uses go routine to speed up process
 func BfsAllPathGoRoutine(start string, end string) ([][]string, map[string]bool, error) {
 	start = strings.TrimSpace(start)
 	end = strings.TrimSpace(end)
@@ -205,12 +204,11 @@ func BfsAllPathGoRoutine(start string, end string) ([][]string, map[string]bool,
 	if !scraper.IsWikiPageUrlExists(&end) {
 		return nil, nil, fmt.Errorf("end page does not exist")
 	}
-	limiter := make(chan struct{}, 100)
+	limiter := make(chan struct{}, 200)
 	startNode := node{
 		url:   start,
 		depth: 0,
 	}
-	queue := []node{startNode}
 
 	visited := make(map[string]bool)
 	visited[start] = true
@@ -219,62 +217,65 @@ func BfsAllPathGoRoutine(start string, end string) ([][]string, map[string]bool,
 	var mutex1 sync.Mutex
 	var wg sync.WaitGroup
 	var maxDepth int32 = 10
+	queue := []node{startNode}
 
 	for atomic.LoadInt32(&found) == 0 {
-		limiter <- struct{}{}
-		wg.Add(1) // using wait group to make sure all go routines has finished
-		go func() {
+		newQueue := []node{}
 
-			defer func() { <-limiter }()
-			defer wg.Done()
-			var curr node
+		for _, value := range queue {
 
-			mutex1.Lock()
-			if len(queue) > 0 {
-				curr = queue[0]
-				queue = queue[1:]
-			}
-			mutex1.Unlock()
+			limiter <- struct{}{}
+			wg.Add(1) // using wait group to make sure all go routines has finished
 
-			if curr.url == end && curr.depth <= atomic.LoadInt32(&maxDepth) { // when current url is the target, update maxDepth
-				atomic.SwapInt32(&maxDepth, curr.depth)
-				return
-			}
-			if curr.depth >= atomic.LoadInt32(&maxDepth) { // when current depth is more than the maxDepth, make found = 1 as a flag to not process nodes anymore
-				atomic.StoreInt32(&found, 1)
-				return
-			}
+			go func(curr node) {
 
-			var allUrl = scraper.GetScrapeLinksConcurrent(curr.url)
-			if allUrl == nil {
-				return
-			}
+				defer func() { <-limiter }()
+				defer wg.Done()
 
-			mutex1.Lock()
-			for _, linkTemp := range allUrl {
+				if curr.url == end && curr.depth <= atomic.LoadInt32(&maxDepth) { // when current url is the target, update maxDepth
+					atomic.SwapInt32(&maxDepth, curr.depth)
+					return
+				}
+				if curr.depth > atomic.LoadInt32(&maxDepth) { // when current depth is more than the maxDepth, make found = 1 as a flag to not process nodes anymore
+					atomic.StoreInt32(&found, 1)
+					return
+				}
 
-				if !visited[linkTemp] {
-					visited[linkTemp] = true
-					parent[linkTemp] = append(parent[linkTemp], curr.url) // update parent map
-					if linkTemp == end && curr.depth <= atomic.LoadInt32(&maxDepth) {
-						atomic.SwapInt32(&maxDepth, curr.depth+1)
-						visited[linkTemp] = false
-						break
-					} else {
-						queue = append(queue, node{ // enqueue node, node has depth + 1 of parent
-							url:   linkTemp,
-							depth: curr.depth + 1,
-						})
+				var allUrl = scraper.GetScrapeLinksConcurrent(curr.url)
+				if allUrl == nil {
+					return
+				}
+
+				mutex1.Lock()
+				for _, linkTemp := range allUrl {
+
+					if !visited[linkTemp] {
+						visited[linkTemp] = true
+						parent[linkTemp] = append(parent[linkTemp], curr.url) // update parent map
+						if linkTemp == end && curr.depth <= atomic.LoadInt32(&maxDepth) {
+							atomic.SwapInt32(&maxDepth, curr.depth+1)
+							atomic.StoreInt32(&found, 1)
+							visited[linkTemp] = false
+							break
+						} else {
+							newQueue = append(newQueue, node{ // enqueue node, node has depth + 1 of parent
+								url:   linkTemp,
+								depth: curr.depth + 1,
+							})
+
+						}
 
 					}
-
 				}
-			}
-			mutex1.Unlock()
+				mutex1.Unlock()
 
-		}()
+			}(value)
+
+		}
+		wg.Wait()
+		queue = newQueue
+
 	}
-	wg.Wait() // waits until all go routines are finished
 
 	if atomic.LoadInt32(&found) == 0 {
 		return nil, visited, fmt.Errorf("path cannot be found") // Return nil if end is not reachable
