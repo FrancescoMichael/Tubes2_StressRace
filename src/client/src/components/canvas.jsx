@@ -38,9 +38,8 @@ export default function Canvas ({ dataResult }) {
         });
     });
     return (
-        // <div className="graf graph-container border border-8 rounded-xl" style={{ border: "2px solid white" }}>
-        //     <GraphCanvas nodes = {nodes} edges = {edges}/>
-        // </div>
-        <GraphCanvas nodes = {nodes} edges = {edges}/>
+        <div className="graf graph-container border border-8 rounded-xl" style={{ border: "2px solid white" }}>
+            <GraphCanvas nodes = {nodes} edges = {edges}/>
+        </div>
     );
 }

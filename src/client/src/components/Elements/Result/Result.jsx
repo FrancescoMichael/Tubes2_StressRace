@@ -79,8 +79,6 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
 
           {/* Graph starts here */}
           <GraphView dataResult={data}/>
-          <Canvas dataResult={data}/>
-
           <ResultList dataResults={currentPost} />
           <Pagination
             totalPosts={data.length}

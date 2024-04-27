@@ -9,36 +9,36 @@ const options = {
   edges: {
     color: "#FFFFFF"
   },
-  // nodes: {
-  //   shape: 'dot',
-  //   scaling: {
-  //     min: 10,
-  //     max: 10,
-  //     label: {
-  //       min: 8,
-  //       max: 30,
-  //       drawThreshold: 12,
-  //       maxVisible: 20
-  //     }
-  //   },
-  //   color: {
-  //     background: '#6D6D6D',
-  //   },
-  //   font: {
-  //     color: '#FFFFFF',
-  //     size: 12
-  //   }
-  // }
+  nodes: {
+    shape: 'dot',
+    scaling: {
+      min: 10,
+      max: 10,
+      label: {
+        min: 8,
+        max: 30,
+        drawThreshold: 12,
+        maxVisible: 20
+      }
+    },
+    color: {
+      background: '#6D6D6D',
+    },
+    font: {
+      color: '#FFFFFF',
+      size: 12
+    }
+  }
 };
 
 export default function GraphView({ dataResult }) {
   const nodes = [];
   const edges = [];
 
-  if(dataResult.length > 12) {
-    dataResult = dataResult.slice(0, 12);
+  if (dataResult.length > 10){
+    dataResult = dataResult.slice(0,10);
   }
-  
+
   dataResult.forEach(step => {
       if (step.title !== null) {
           step.title.forEach((title, index) => {
