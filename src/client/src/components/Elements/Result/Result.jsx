@@ -3,6 +3,7 @@ import ResultList from "./ResultList";
 import Pagination from "./Pagination";
 import axios from "axios";
 import GraphView from "../../graph";
+import Canvas from "../../canvas";
 
 export default function Result({ isLoading, setIsLoading, startTime }) {
   const [data, setData] = useState([]);
@@ -18,6 +19,7 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
         try {
           const result = await axios("http://localhost:8080/api/result");
           setData(result.data);
+          console.log(data);
 
           const propertiesResult = await axios("http://localhost:8080/api/properties");
           setProperties(propertiesResult.data);
@@ -77,6 +79,7 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
 
           {/* Graph starts here */}
           <GraphView dataResult={data}/>
+          <Canvas dataResult={data}/>
 
           <ResultList dataResults={currentPost} />
           <Pagination

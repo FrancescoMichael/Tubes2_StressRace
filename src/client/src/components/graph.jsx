@@ -9,43 +9,38 @@ const options = {
   edges: {
     color: "#FFFFFF"
   },
-  nodes: {
-    shape: 'dot',
-    scaling: {
-      min: 10,
-      max: 10,
-      label: {
-        min: 8,
-        max: 30,
-        drawThreshold: 12,
-        maxVisible: 20
-      }
-    },
-    color: {
-      background: '#6D6D6D',
-    },
-    font: {
-      color: '#FFFFFF',
-      size: 12
-    }
-  }
+  // nodes: {
+  //   shape: 'dot',
+  //   scaling: {
+  //     min: 10,
+  //     max: 10,
+  //     label: {
+  //       min: 8,
+  //       max: 30,
+  //       drawThreshold: 12,
+  //       maxVisible: 20
+  //     }
+  //   },
+  //   color: {
+  //     background: '#6D6D6D',
+  //   },
+  //   font: {
+  //     color: '#FFFFFF',
+  //     size: 12
+  //   }
+  // }
 };
 
 export default function GraphView({ dataResult }) {
   const nodes = [];
   const edges = [];
-  
-  // Populate nodes and edges from dataResult
 
   dataResult.forEach(step => {
       if (step.title !== null) {
           step.title.forEach((title, index) => {
-              // Add node if it doesn't exist already
               if (!nodes.find(node => node.id === title)) {
                   nodes.push({ id: title, label: title, url: step.url ? step.url[index] : null });
               }
-
-              // Add edge if not the first step
               if (index > 0 && step.title[index - 1] !== null) {
                   edges.push({ from: step.title[index - 1], to: title });
               }
@@ -53,10 +48,8 @@ export default function GraphView({ dataResult }) {
       }
   });
 
-  // Define event handler for node selection
   const handleNodeSelect = ({ nodes }) => {
     console.log("Selected nodes:", nodes);
-    // Open URL if a single node is selected
     if (nodes.length === 1) {
       const selectedNode = nodes[0];
       const nodeData = nodes.find(node => node.id === selectedNode);
@@ -66,7 +59,6 @@ export default function GraphView({ dataResult }) {
     }
   };
 
-  // Define state with graph and events
   const [state, setState] = useState({
     graph: {
       nodes,
@@ -77,7 +69,6 @@ export default function GraphView({ dataResult }) {
     }
   });
 
-  // Destructure state for graph and events
   const { graph, events } = state;
 
   return (
