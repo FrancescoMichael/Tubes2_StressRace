@@ -41,7 +41,7 @@ func WebScraping(url string, resultData *[]string) error {
 		href, exists := s.Attr("href")
 		href = strings.Split(href, "#")[0]
 		// exclude certain links
-		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] && !strings.HasPrefix(href, "/wiki/Category:") && !strings.HasPrefix(href, "/wiki/Template:") && !strings.HasPrefix(href, "/wiki/Special:") && !strings.HasPrefix(href, "/wiki/Wikipedia:") && !strings.HasPrefix(href, "/wiki/Help:") && !strings.HasPrefix(href, "/wiki/Portal:") && !strings.HasPrefix(href, "/wiki/Template_talk:") {
+		if exists && strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") && !hasSeen[href] && !strings.HasPrefix(href, "/wiki/Category:") && !strings.HasPrefix(href, "/wiki/Template:") && !strings.HasPrefix(href, "/wiki/Special:") && !strings.HasPrefix(href, "/wiki/Wikipedia:") && !strings.HasPrefix(href, "/wiki/Help:") && !strings.HasPrefix(href, "/wiki/Portal:") && !strings.HasPrefix(href, "/wiki/Template_talk:") && !strings.HasPrefix(href, "/wiki/Main_Page") && href != "/wiki/" {
 			*resultData = append(*resultData, "https://en.wikipedia.org"+href)
 			hasSeen[href] = true
 		}

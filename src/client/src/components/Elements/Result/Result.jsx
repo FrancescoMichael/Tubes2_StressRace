@@ -3,7 +3,6 @@ import ResultList from "./ResultList";
 import Pagination from "./Pagination";
 import axios from "axios";
 import GraphView from "../../graph";
-import Canvas from "../../canvas";
 
 export default function Result({ isLoading, setIsLoading, startTime }) {
   const [data, setData] = useState([]);
