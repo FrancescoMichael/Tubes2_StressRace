@@ -1,6 +1,8 @@
 # Tubes2_StressRace
 > A simple web project that determines the shortest path between two Wikipedia articles using Breadth-First Search (BFS) and Iterative Deepening Search (IDS) algorithms.
 
+
+
 ## Table of Contents
 * [General Info](#general-information)
 * [Team Members](#team-members)
@@ -9,6 +11,7 @@
 * [Screenshots](#screenshots)
 * [Setup](#setup)
 * [Usage](#usage)
+* [Links](#links)
 * [Room for Improvement](#room-for-improvement)
 
 
@@ -25,7 +28,6 @@ WikiRace is a game designed to find the shortest path between two Wikipedia arti
 ## Technologies Used
 - Go (Gin) 
 - Docker
-- React JS
 - Next JS
 - Tailwind CSS
 
@@ -93,12 +95,10 @@ after both backend and frontend are up and running, access the web application b
 ![third example](./img/ex3.png)<br/><br/><br/>
 ![fourth example](./img/ex4.png)<br/>
 
+## Links
+- [Video (bonus)](https://youtu.be/gW_4sZ4kHMg)
+
 ## Room for Improvement
 Room for improvement:
 - Better Breadth-First Search (BFS) and Iterative Deepening Search (IDS) algorithms
 - Explore methods to reduce memory consumption in BFS
-
-
-To do:
-- Video Example
-  
