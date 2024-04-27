@@ -38,6 +38,12 @@ export default function Result({ isLoading, setIsLoading, startTime }) {
     setDuration((endTime - startTime).toFixed(2));
   }, [endTime, startTime]);
 
+  useEffect(() => {
+    if (data.length === 1) {
+      setCurrentPage(1);
+    }
+  }, [data]);
+
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
   const currentPost = data.slice(firstPostIndex, lastPostIndex);
