@@ -40,17 +40,10 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
             setTimeout(() => {
                 setNotification("");
             }, 2000);
-        // } else if(urlStart === "" || urlTarget === ""){
-        //     console.log(notification);
-        //     setNotification("The link does not exist");
-        //     setTimeout(() => {
-        //         setNotification("");
-        //     }, 2000);
         } else {
             setIsLoading(true);
             setNotification("");
             console.log("Ini path : ", path);
-            // console.log(`Start URL : ${urlStart}\nEnd URL : ${urlTarget}\nAlgoritma : ${algorithm}`)
             const algorithmString = algorithm.toString();
             const pathString = path.toString();
             
@@ -105,7 +98,6 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
 
                 <div className="flex flex-col items-center justify-center">
                     <button type="submit" className="glow-on-hover bg-white text-black px-4 py-2 text-xl rounded-xl font-medium" onClick = {handleSearch}>
-                    {/* <button type="submit" className="bg-gradient-to-r from-blue-500 to-red-500 text-white px-4 py-2 text-xl rounded-xl font-medium focus:ring ring-black ring-opacity-10 gradient element-to-rotate" onClick = {handleSearch}> */}
                         Search!
                     </button>
                     {notification && (
@@ -116,7 +108,7 @@ function InputForm({ isLoading, setIsLoading, startTime, setStartTime}) {
 
                             </div>
                         </div>
-                )}
+                    )}
                 </div>
             </form>
         </>

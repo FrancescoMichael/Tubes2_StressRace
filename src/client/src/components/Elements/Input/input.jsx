@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import CloseIcon from "@mui/icons-material/Close"
 
 function Input(props){
     const { type, placeholder, name, setInputSearch, setURLSearch, value } = props;
@@ -17,27 +16,6 @@ function Input(props){
         setIsVisible(inputValue !== "");
     }
 
-    // function titleToURL(title) {
-    //     return "https://en.wikipedia.org/wiki/" + title.replace(/ /g, '_');
-    // }
-
-    // function URLExist(testURL) {
-    //     fetch(testURL)
-    //         .then(response => {
-    //             if (response.ok) {
-    //                 console.log('URL exists');
-    //                 return true;
-    //             } else {
-    //                 console.error('URL does not exist');
-    //                 return false;
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error('Error occurred while checking URL:', error);
-    //         });
-
-    // }
-
     const handleKeyDown = e => {
         if(selectedItem < searchData.length) {
             if(e.key === "ArrowUp" && selectedItem > 0) {
@@ -53,16 +31,6 @@ function Input(props){
                 setIsVisible(false);
                 setInputSearch(options[selectedItem].label);
             }
-            // } else if(e.key === "Enter" && selectedItem == -1) {
-            //     setSearch(e.target.value)
-            //     setIsVisible(false);
-            //     // if(URLExist(titleToURL(search))) {
-            //     //     setURLSearch(titleToURL(search))
-            //     // } else {
-            //     //     setURLSearch("")
-            //     // }
-            //     setURLSearch("")
-            // }
         } else {
             setSelectedItem(-1)
         }        
@@ -109,7 +77,6 @@ function Input(props){
                     return (
                     <div
                         key={index}
-                        // className="px-5 py-2 cursor-pointer text-xl block"
                         className = {selectedItem === index ?
                             "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 bg-blue-200 rounded-xl " :
                             "px-5 py-2 cursor-pointer text-xl block hover:bg-gray-400 rounded-xl"

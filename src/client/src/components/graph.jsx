@@ -57,7 +57,7 @@ export default function GraphView({ dataResult }) {
       const selectedNode = nodes[0];
       const nodeData = nodes.find(node => node.id === selectedNode);
       if (nodeData && nodeData.url) {
-        window.open(nodeData.url, "_blank"); // Open URL in new tab
+        window.open(nodeData.url, "_blank");
       }
     }
   };
