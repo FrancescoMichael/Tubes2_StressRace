@@ -35,6 +35,10 @@ export default function GraphView({ dataResult }) {
   const nodes = [];
   const edges = [];
 
+  if(dataResult.length > 12) {
+    dataResult = dataResult.slice(0, 12);
+  }
+  
   dataResult.forEach(step => {
       if (step.title !== null) {
           step.title.forEach((title, index) => {
