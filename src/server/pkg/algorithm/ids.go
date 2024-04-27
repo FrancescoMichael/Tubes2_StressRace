@@ -69,7 +69,11 @@ func dls(currUrl string, endPage string, currDepth int, visited map[string]bool,
 // reference : https://youtu.be/Y85ECk_H3h4?si=dm3PtHyv16rDHC38
 // The reason that IdsFirstPath does not have visited map is to reduce the amount of mutex used when using go routine
 // IdsFirstPath is the same as IDS, but it only returns one path and it also returns the amount of articles that has been processed
+
+var Found int32
+
 func IdsFirstPath(startUrl string, endUrl string, maxDepth int) ([]string, int, error) {
+	Found = 0
 	startUrl = strings.TrimSpace(startUrl)
 	endUrl = strings.TrimSpace(endUrl)
 	var resultPath []string
@@ -94,11 +98,12 @@ func dlsFirstPath(currUrl string, endUrl string, depth int, resultPaths *[]strin
 	// fmt.Println(currUrl)
 	LockPaths.Lock()
 	newPath := append(currPath, currUrl)
-	if currUrl == endUrl {
-		*resultPaths = append(*resultPaths, newPath...)
+
+	if len(*resultPaths) > 0 {
 		LockPaths.Unlock()
 		return
-	} else if len(*resultPaths) > 0 {
+	} else if currUrl == endUrl {
+		*resultPaths = append(*resultPaths, newPath...)
 		LockPaths.Unlock()
 		return
 	}

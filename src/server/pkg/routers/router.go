@@ -80,6 +80,7 @@ func GetResult(c *gin.Context) {
 		return
 	}
 	if searchData.Path == "1" {
+		fmt.Println(hasil)
 
 		data := make([]Result, 1) // ini masih satu path saja
 		data[0] = Result{
